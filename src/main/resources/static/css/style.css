@@ -1,0 +1,71 @@
+/* Employee Portal Styles */
+:root {
+    --primary-color: #007bff;
+    --secondary-color: #6c757d;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --info-color: #17a2b8;
+    --light-color: #f8f9fa;
+    --dark-color: #343a40;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--light-color);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    color: var(--primary-color) !important;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.sidebar {
+    min-height: 100vh;
+    background-color: var(--dark-color);
+}
+
+.sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.sidebar .nav-link:hover {
+    color: white;
+}
+
+.sidebar .nav-link.active {
+    color: white;
+    background-color: var(--primary-color);
+}
+
+.main-content {
+    padding: 20px;
+}
+
+.login-container {
+    max-width: 400px;
+    margin: 100px auto;
+}
+
+.footer {
+    background-color: var(--dark-color);
+    color: white;
+    text-align: center;
+    padding: 20px 0;
+    margin-top: auto;
+}

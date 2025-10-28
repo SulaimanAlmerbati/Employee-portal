@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Request Rejected</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #dc3545;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            background-color: #f8f9fa;
+            padding: 30px;
+            border: 1px solid #dee2e6;
+        }
+        .leave-details {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #dc3545;
+        }
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .label {
+            font-weight: bold;
+            color: #495057;
+        }
+        .value {
+            color: #dc3545;
+        }
+        .footer {
+            background-color: #6c757d;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            border-radius: 0 0 5px 5px;
+            font-size: 12px;
+        }
+        .status-badge {
+            background-color: #dc3545;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .rejection-reason {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .next-steps {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>❌ Leave Request Rejected</h1>
+        <p th:text="${companyName}">Employee Portal</p>
+    </div>
+    
+    <div class="content">
+        <p>Dear <strong th:text="${userName}">Employee</strong>,</p>
+        
+        <p>We regret to inform you that your leave request has been <span class="status-badge">REJECTED</span>.</p>
+        
+        <div class="leave-details">
+            <h3>Rejected Leave Details</h3>
+            
+            <div class="detail-row">
+                <span class="label">Request ID:</span>
+                <span class="value" th:text="${leaveId}">#12345</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="label">Leave Type:</span>
+                <span class="value" th:text="${leaveType}">Annual Leave</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="label">Start Date:</span>
+                <span class="value" th:text="${startDate}">Jan 15, 2024</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="label">End Date:</span>
+                <span class="value" th:text="${endDate}">Jan 19, 2024</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="label">Duration:</span>
+                <span class="value"><span th:text="${duration}">5</span> days</span>
+            </div>
+            
+            <div class="detail-row">
+                <span class="label">Reviewed by:</span>
+                <span class="value" th:text="${approvedBy}">Manager Name</span>
+            </div>
+        </div>
+        
+        <div class="rejection-reason">
+            <strong>Reason for Rejection:</strong><br/>
+            <span th:text="${managerComments ?: 'No specific reason provided'}">Manager's reason for rejecting the leave request</span>
+        </div>
+        
+        <div class="next-steps">
+            <strong>Next Steps:</strong>
+            <ul style="margin: 10px 0 0 20px;">
+                <li>Contact your manager to discuss alternative dates or arrangements</li>
+                <li>Review your team's schedule and workload requirements</li>
+                <li>Consider submitting a new request for different dates</li>
+                <li>Speak with HR if you have questions about leave policies</li>
+            </ul>
+        </div>
+        
+        <p>You can submit a new leave request anytime through the <a th:href="${portalUrl}" style="color: #dc3545;">Employee Portal</a>.</p>
+        
+        <p>If you have any questions or concerns about this decision, please don't hesitate to reach out to your manager or HR department.</p>
+    </div>
+    
+    <div class="footer">
+        <p>&copy; <span th:text="${currentYear}">2024</span> <span th:text="${companyName}">Employee Portal</span>. All rights reserved.</p>
+        <p>This is an automated message. Please do not reply to this email.</p>
+    </div>
+</body>
+</html>
