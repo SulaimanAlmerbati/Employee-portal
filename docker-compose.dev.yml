@@ -1,0 +1,56 @@
+# Development Docker Compose configuration
+# Use this for development with hot reload and debugging
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database (same as production)
+  postgres:
+    image: postgres:15-alpine
+    container_name: employee-portal-db-dev
+    environment:
+      POSTGRES_DB: employee_portal_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5433:5432"  # Different port to avoid conflicts
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+      - ./docker/init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - employee-portal-dev-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d employee_portal_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # pgAdmin for development
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: employee-portal-pgadmin-dev
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@employeeportal.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5051:80"  # Different port for dev
+    depends_on:
+      - postgres
+    networks:
+      - employee-portal-dev-network
+    restart: unless-stopped
+    volumes:
+      - pgadmin_dev_data:/var/lib/pgadmin
+
+volumes:
+  postgres_dev_data:
+    driver: local
+  pgadmin_dev_data:
+    driver: local
+
+networks:
+  employee-portal-dev-network:
+    driver: bridge

@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Portal - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/dashboard">
+                <i class="bi bi-building"></i> Employee Portal
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" id="dashboardTab">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="leavesTab">
+                            <i class="bi bi-calendar-check"></i> Leaves
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="payrollTab">
+                            <i class="bi bi-cash-coin"></i> Payroll
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="announcementsTab">
+                            <i class="bi bi-megaphone"></i> Announcements
+                        </a>
+                    </li>
+                    <!-- Role-specific navigation -->
+                    <li class="nav-item d-none" id="hrNav">
+                        <a class="nav-link" href="#" id="pendingLeavesTab">
+                            <i class="bi bi-check-circle"></i> Pending Leaves
+                        </a>
+                    </li>
+                    <li class="nav-item d-none" id="itAdminNav">
+                        <a class="nav-link" href="#" id="usersTab">
+                            <i class="bi bi-people"></i> Users
+                        </a>
+                    </li>
+                    <li class="nav-item d-none" id="financeNav">
+                        <a class="nav-link" href="#" id="payrollManagementTab">
+                            <i class="bi bi-cash-stack"></i> Payroll Mgmt
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i> <span id="userName">User</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" id="profileLink">
+                                <i class="bi bi-person"></i> Profile
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#" id="logoutLink">
+                                <i class="bi bi-box-arrow-right"></i> Logout
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-12">
+                <!-- Alert Container -->
+                <div id="alertContainer"></div>
+                
+                <!-- Dashboard Content -->
+                <div id="dashboardContent">
+                    <div class="row">
+                        <div class="col-12">
+                            <h2>Welcome to Employee Portal</h2>
+                            <p class="text-muted">Loading your dashboard...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Leaves Content -->
+                <div id="leavesContent" class="d-none">
+                    <h2>Leave Management</h2>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>My Leave Requests</h5>
+                                </div>
+                                <div class="card-body" id="myLeaves">
+                                    <p>Loading leave requests...</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Request New Leave</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="leaveRequestForm">
+                                        <div class="mb-3">
+                                            <label for="leaveType" class="form-label">Leave Type</label>
+                                            <select class="form-select" id="leaveType" required>
+                                                <option value="">Select leave type</option>
+                                                <option value="ANNUAL">Annual Leave</option>
+                                                <option value="SICK">Sick Leave</option>
+                                                <option value="PERSONAL">Personal Leave</option>
+                                                <option value="MATERNITY">Maternity Leave</option>
+                                                <option value="PATERNITY">Paternity Leave</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="startDate" class="form-label">Start Date</label>
+                                            <input type="date" class="form-control" id="startDate" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="endDate" class="form-label">End Date</label>
+                                            <input type="date" class="form-control" id="endDate" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="reason" class="form-label">Reason</label>
+                                            <textarea class="form-control" id="reason" rows="3" required></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Submit Request</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payroll Content -->
+                <div id="payrollContent" class="d-none">
+                    <h2>Payroll</h2>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>My Payslips</h5>
+                        </div>
+                        <div class="card-body" id="payrollList">
+                            <p>Loading payslips...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Announcements Content -->
+                <div id="announcementsContent" class="d-none">
+                    <h2>Announcements</h2>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Company Announcements</h5>
+                        </div>
+                        <div class="card-body" id="announcementsList">
+                            <p>Loading announcements...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Content (IT Admin Only) -->
+                <div id="usersContent" class="d-none">
+                    <h2>User Management</h2>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <button class="btn btn-primary" onclick="dashboardApp.showCreateUserModal()">
+                                <i class="bi bi-person-plus"></i> Create New User
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="userSearchInput" placeholder="Search users...">
+                                <button class="btn btn-outline-secondary" onclick="dashboardApp.searchUsers()">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>All Users</h5>
+                        </div>
+                        <div class="card-body" id="usersList">
+                            <p>Loading users...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Content -->
+                <div id="profileContent" class="d-none">
+                    <h2>My Profile</h2>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Profile Information</h5>
+                        </div>
+                        <div class="card-body" id="profileDetails">
+                            <p>Loading profile...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Leaves Content (HR Only) -->
+                <div id="pendingLeavesContent" class="d-none">
+                    <h2>Pending Leave Requests</h2>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Requests Awaiting Approval</h5>
+                        </div>
+                        <div class="card-body" id="pendingLeavesList">
+                            <p>Loading pending requests...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Announcement Management Content (HR Only) -->
+                <div id="announcementManagementContent" class="d-none">
+                    <h2>Announcement Management</h2>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Create New Announcement</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="createAnnouncementForm">
+                                        <div class="mb-3">
+                                            <label for="announcementTitle" class="form-label">Title</label>
+                                            <input type="text" class="form-control" id="announcementTitle" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="announcementContent" class="form-label">Content</label>
+                                            <textarea class="form-control" id="announcementContent" rows="4" required></textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="targetDepartment" class="form-label">Target Department</label>
+                                            <select class="form-select" id="targetDepartment">
+                                                <option value="">Company-wide</option>
+                                                <option value="Engineering">Engineering</option>
+                                                <option value="Human Resources">Human Resources</option>
+                                                <option value="Finance">Finance</option>
+                                                <option value="Marketing">Marketing</option>
+                                                <option value="Information Technology">Information Technology</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Create Announcement</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5>Existing Announcements</h5>
+                                </div>
+                                <div class="card-body" id="managementAnnouncementsList">
+                                    <p>Loading announcements...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payroll Management Content (Finance Only) -->
+                <div id="payrollManagementContent" class="d-none">
+                    <h2>Payroll Management</h2>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>All Employee Payrolls</h5>
+                        </div>
+                        <div class="card-body" id="payrollManagementList">
+                            <p>Loading payroll data...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/app.js"></script>
+    <script>
+        class DashboardApp {
+            constructor() {
+                this.currentUser = null;
+                this.init();
+            }
+
+            async init() {
+                // Check if user is authenticated
+                const token = localStorage.getItem('jwt_token');
+                if (!token) {
+                    window.location.href = '/login';
+                    return;
+                }
+
+                try {
+                    await this.loadUserProfile();
+                    this.setupEventListeners();
+                    this.showDashboard();
+                } catch (error) {
+                    console.error('Failed to initialize dashboard:', error);
+                    localStorage.removeItem('jwt_token');
+                    window.location.href = '/login';
+                }
+            }
+
+            async loadUserProfile() {
+                const response = await window.employeePortalApp.apiCall('/users/profile');
+                if (response && response.ok) {
+                    this.currentUser = await response.json();
+                    document.getElementById('userName').textContent = this.currentUser.name;
+                    
+                    // Show role-specific navigation
+                    this.updateNavigationForRole(this.currentUser.role);
+                } else {
+                    throw new Error('Failed to load user profile');
+                }
+            }
+
+            setupEventListeners() {
+                // Navigation tabs
+                document.getElementById('dashboardTab').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.showDashboard();
+                });
+
+                document.getElementById('leavesTab').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.showLeaves();
+                });
+
+                document.getElementById('payrollTab').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.showPayroll();
+                });
+
+                document.getElementById('announcementsTab').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.showAnnouncements();
+                });
+
+                document.getElementById('usersTab').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    this.showUsers();
+                });
+
+                // Logout
+                document.getElementById('logoutLink').addEventListener('click', (e) => {
+                    e.preventDefault();
+                    window.employeePortalApp.logout();
+                });
+
+                // Leave request form
+                document.getElementById('leaveRequestForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.submitLeaveRequest();
+                });
+            }
+
+            updateNavigationForRole(role) {
+                // Hide all role-specific navigation
+                document.getElementById('hrNav').classList.add('d-none');
+                document.getElementById('itAdminNav').classList.add('d-none');
+                document.getElementById('financeNav').classList.add('d-none');
+
+                // Show navigation based on role
+                switch(role) {
+                    case 'HR':
+                        document.getElementById('hrNav').classList.remove('d-none');
+                        break;
+                    case 'IT_ADMIN':
+                        document.getElementById('itAdminNav').classList.remove('d-none');
+                        break;
+                    case 'FINANCE':
+                        document.getElementById('financeNav').classList.remove('d-none');
+                        break;
+                }
+            }
+
+            showContent(contentId) {
+                // Hide all content sections
+                const contents = [
+                    'dashboardContent', 'leavesContent', 'payrollContent', 'announcementsContent', 
+                    'usersContent', 'profileContent', 'pendingLeavesContent', 
+                    'announcementManagementContent', 'payrollManagementContent'
+                ];
+                contents.forEach(id => {
+                    document.getElementById(id).classList.add('d-none');
+                });
+
+                // Show selected content
+                document.getElementById(contentId).classList.remove('d-none');
+
+                // Update active nav
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
+                const tabId = contentId.replace('Content', 'Tab');
+                const tabElement = document.getElementById(tabId);
+                if (tabElement) {
+                    tabElement.classList.add('active');
+                }
+            }
+
+            async showDashboard() {
+                this.showContent('dashboardContent');
+                
+                let quickActions = this.getQuickActionsForRole(this.currentUser.role);
+                
+                const dashboardHtml = `
+                    <div class="row">
+                        <div class="col-12">
+                            <h2>Welcome, ${this.currentUser.name}!</h2>
+                            <p class="text-muted">Role: ${this.currentUser.role} | Department: ${this.currentUser.department || 'Not assigned'}</p>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        ${quickActions}
+                    </div>
+                `;
+                
+                document.getElementById('dashboardContent').innerHTML = dashboardHtml;
+            }
+
+            getQuickActionsForRole(role) {
+                // Base actions available to all roles
+                let actions = [
+                    {
+                        icon: 'bi-person-circle',
+                        title: 'My Profile',
+                        description: 'View and edit your profile',
+                        color: 'primary',
+                        action: 'showProfile()'
+                    },
+                    {
+                        icon: 'bi-calendar-check',
+                        title: 'Leave Requests',
+                        description: 'Manage your leave requests',
+                        color: 'success',
+                        action: 'showLeaves()'
+                    },
+                    {
+                        icon: 'bi-megaphone',
+                        title: 'Announcements',
+                        description: 'Read company news',
+                        color: 'info',
+                        action: 'showAnnouncements()'
+                    }
+                ];
+
+                // Role-specific actions
+                switch(role) {
+                    case 'HR':
+                        actions.push({
+                            icon: 'bi-check-circle',
+                            title: 'Approve Leaves',
+                            description: 'Review and approve leave requests',
+                            color: 'warning',
+                            action: 'showPendingLeaves()'
+                        });
+                        actions.push({
+                            icon: 'bi-megaphone-fill',
+                            title: 'Manage Announcements',
+                            description: 'Create and manage announcements',
+                            color: 'secondary',
+                            action: 'showAnnouncementManagement()'
+                        });
+                        break;
+                    
+                    case 'IT_ADMIN':
+                        actions.push({
+                            icon: 'bi-people',
+                            title: 'Manage Users',
+                            description: 'Create, update, and manage users',
+                            color: 'danger',
+                            action: 'showUserManagement()'
+                        });
+                        break;
+                    
+                    case 'FINANCE':
+                        actions.push({
+                            icon: 'bi-cash-coin',
+                            title: 'Manage Payroll',
+                            description: 'View and manage user payrolls',
+                            color: 'success',
+                            action: 'showPayrollManagement()'
+                        });
+                        break;
+                }
+
+                // Always add personal payroll for all roles
+                actions.splice(3, 0, {
+                    icon: 'bi-receipt',
+                    title: 'My Payroll',
+                    description: 'View your payslips',
+                    color: 'success',
+                    action: 'showPayroll()'
+                });
+
+                return actions.map(action => `
+                    <div class="col-md-4 mb-3">
+                        <div class="card text-center h-100">
+                            <div class="card-body">
+                                <i class="bi ${action.icon} fs-1 text-${action.color}"></i>
+                                <h5 class="card-title mt-2">${action.title}</h5>
+                                <p class="card-text">${action.description}</p>
+                                <button class="btn btn-${action.color}" onclick="dashboardApp.${action.action}">${action.title}</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            async showLeaves() {
+                this.showContent('leavesContent');
+                await this.loadMyLeaves();
+            }
+
+            async showPayroll() {
+                this.showContent('payrollContent');
+                await this.loadPayroll();
+            }
+
+            async showAnnouncements() {
+                this.showContent('announcementsContent');
+                await this.loadAnnouncements();
+            }
+
+            async showUsers() {
+                if (this.currentUser.role !== 'IT_ADMIN') {
+                    window.employeePortalApp.showAlert('Access denied. IT Admin role required.', 'danger');
+                    return;
+                }
+                this.showContent('usersContent');
+                await this.loadUsers();
+            }
+
+            async showProfile() {
+                this.showContent('profileContent');
+                await this.loadProfile();
+            }
+
+            async showPendingLeaves() {
+                if (this.currentUser.role !== 'HR') {
+                    window.employeePortalApp.showAlert('Access denied. HR role required.', 'danger');
+                    return;
+                }
+                this.showContent('pendingLeavesContent');
+                await this.loadPendingLeaves();
+            }
+
+            async showAnnouncementManagement() {
+                if (this.currentUser.role !== 'HR') {
+                    window.employeePortalApp.showAlert('Access denied. HR role required.', 'danger');
+                    return;
+                }
+                this.showContent('announcementManagementContent');
+                await this.loadAnnouncementManagement();
+            }
+
+            async showPayrollManagement() {
+                if (this.currentUser.role !== 'FINANCE') {
+                    window.employeePortalApp.showAlert('Access denied. Finance role required.', 'danger');
+                    return;
+                }
+                this.showContent('payrollManagementContent');
+                await this.loadPayrollManagement();
+            }
+
+            async showUserManagement() {
+                if (this.currentUser.role !== 'IT_ADMIN') {
+                    window.employeePortalApp.showAlert('Access denied. IT Admin role required.', 'danger');
+                    return;
+                }
+                this.showContent('usersContent');
+                await this.loadUsers();
+            }
+
+            async loadMyLeaves() {
+                try {
+                    const response = await window.employeePortalApp.apiCall('/leaves/my-requests');
+                    if (response && response.ok) {
+                        const leaves = await response.json();
+                        this.displayLeaves(leaves);
+                    }
+                } catch (error) {
+                    console.error('Failed to load leaves:', error);
+                    document.getElementById('myLeaves').innerHTML = '<p class="text-danger">Failed to load leave requests</p>';
+                }
+            }
+
+            displayLeaves(leaves) {
+                if (leaves.length === 0) {
+                    document.getElementById('myLeaves').innerHTML = '<p>No leave requests found</p>';
+                    return;
+                }
+
+                const leavesHtml = leaves.map(leave => `
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h6 class="card-title">${leave.leaveType} Leave</h6>
+                            <p class="card-text">
+                                <strong>Dates:</strong> ${leave.startDate} to ${leave.endDate}<br>
+                                <strong>Status:</strong> <span class="badge bg-${this.getStatusColor(leave.status)}">${leave.status}</span><br>
+                                <strong>Reason:</strong> ${leave.reason}
+                            </p>
+                        </div>
+                    </div>
+                `).join('');
+
+                document.getElementById('myLeaves').innerHTML = leavesHtml;
+            }
+
+            getStatusColor(status) {
+                switch (status) {
+                    case 'APPROVED': return 'success';
+                    case 'REJECTED': return 'danger';
+                    case 'PENDING': return 'warning';
+                    default: return 'secondary';
+                }
+            }
+
+            async submitLeaveRequest() {
+                const formData = {
+                    leaveType: document.getElementById('leaveType').value,
+                    startDate: document.getElementById('startDate').value,
+                    endDate: document.getElementById('endDate').value,
+                    reason: document.getElementById('reason').value
+                };
+
+                try {
+                    const response = await window.employeePortalApp.apiCall('/leaves/request', {
+                        method: 'POST',
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (response && response.ok) {
+                        window.employeePortalApp.showAlert('Leave request submitted successfully!', 'success');
+                        document.getElementById('leaveRequestForm').reset();
+                        await this.loadMyLeaves();
+                    } else {
+                        const error = await response.json();
+                        window.employeePortalApp.showAlert('Failed to submit leave request: ' + error.message, 'danger');
+                    }
+                } catch (error) {
+                    console.error('Failed to submit leave request:', error);
+                    window.employeePortalApp.showAlert('Failed to submit leave request', 'danger');
+                }
+            }
+
+            async loadPayroll() {
+                try {
+                    const response = await window.employeePortalApp.apiCall('/payroll/my-payslips');
+                    if (response && response.ok) {
+                        const payslips = await response.json();
+                        this.displayPayroll(payslips);
+                    }
+                } catch (error) {
+                    console.error('Failed to load payroll:', error);
+                    document.getElementById('payrollList').innerHTML = '<p class="text-danger">Failed to load payslips</p>';
+                }
+            }
+
+            displayPayroll(payslips) {
+                if (payslips.length === 0) {
+                    document.getElementById('payrollList').innerHTML = '<p>No payslips found</p>';
+                    return;
+                }
+
+                const payrollHtml = payslips.map(payslip => `
+                    <div class="card mb-2">
+                        <div class="card-body">
+                            <h6 class="card-title">Payslip - ${payslip.payPeriod}</h6>
+                            <p class="card-text">
+                                <strong>Gross Salary:</strong> $${payslip.grossSalary}<br>
+                                <strong>Net Salary:</strong> $${payslip.netSalary}<br>
+                                <strong>Tax Deducted:</strong> $${payslip.taxDeducted}
+                            </p>
+                            <button class="btn btn-sm btn-outline-primary" onclick="window.open('/api/payroll/payslip/${payslip.id}/pdf', '_blank')">
+                                <i class="bi bi-download"></i> Download PDF
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+
+                document.getElementById('payrollList').innerHTML = payrollHtml;
+            }
+
+            async loadAnnouncements() {
+                try {
+                    const response = await window.employeePortalApp.apiCall('/announcements');
+                    if (response && response.ok) {
+                        const announcements = await response.json();
+                        this.displayAnnouncements(announcements);
+                    }
+                } catch (error) {
+                    console.error('Failed to load announcements:', error);
+                    document.getElementById('announcementsList').innerHTML = '<p class="text-danger">Failed to load announcements</p>';
+                }
+            }
+
+            displayAnnouncements(announcements) {
+                if (announcements.length === 0) {
+                    document.getElementById('announcementsList').innerHTML = '<p>No announcements found</p>';
+                    return;
+                }
+
+                const announcementsHtml = announcements.map(announcement => `
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">${announcement.title}</h5>
+                            <p class="card-text">${announcement.content}</p>
+                            <small class="text-muted">
+                                Posted on ${new Date(announcement.createdAt).toLocaleDateString()}
+                                by ${announcement.createdBy.name}
+                            </small>
+                        </div>
+                    </div>
+                `).join('');
+
+                document.getElementById('announcementsList').innerHTML = announcementsHtml;
+            }
+
+            async loadUsers() {
+                try {
+                    const response = await window.employeePortalApp.apiCall('/users');
+                    if (response && response.ok) {
+                        const users = await response.json();
+                        this.displayUsers(users);
+                    }
+                } catch (error) {
+                    console.error('Failed to load users:', error);
+                    document.getElementById('usersList').innerHTML = '<p class="text-danger">Failed to load users</p>';
+                }
+            }
+
+            displayUsers(users) {
+                if (users.length === 0) {
+                    document.getElementById('usersList').innerHTML = '<p>No users found</p>';
+                    return;
+                }
+
+                const usersHtml = `
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Department</th>
+                                    <th>Status</th>
+                                    <th>Join Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${users.map(user => `
+                                    <tr>
+                                        <td>${user.name}</td>
+                                        <td>${user.email}</td>
+                                        <td><span class="badge bg-primary">${user.role}</span></td>
+                                        <td>${user.department || 'Not assigned'}</td>
+                                        <td><span class="badge bg-${user.active ? 'success' : 'danger'}">${user.active ? 'Active' : 'Inactive'}</span></td>
+                                        <td>${user.joinDate ? new Date(user.joinDate).toLocaleDateString() : 'N/A'}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+
+                document.getElementById('usersList').innerHTML = usersHtml;
+            }
+        }
+
+        // Initialize dashboard when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.dashboardApp = new DashboardApp();
+        });
+    </script>
+</body>
+</html>

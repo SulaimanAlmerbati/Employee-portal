@@ -1,0 +1,56 @@
+# Docker ignore file for Employee Portal
+
+# Git
+.git
+.gitignore
+
+# Documentation
+README.md
+*.md
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+target/
+build/
+*.jar
+*.war
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+tmp/
+temp/
+
+# Node modules (if any frontend build tools)
+node_modules/
+npm-debug.log*
+
+# Docker files (don't copy into container)
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Test files
+src/test/
+
+# Maven wrapper (optional - can be included if needed)
+.mvn/
+mvnw
+mvnw.cmd

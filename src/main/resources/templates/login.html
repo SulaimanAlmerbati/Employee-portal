@@ -64,7 +64,7 @@
 
                 if (response.ok) {
                     const data = await response.json();
-                    localStorage.setItem('jwt_token', data.token);
+                    localStorage.setItem('jwt_token', data.accessToken);
                     window.location.href = '/dashboard';
                 } else {
                     const error = await response.json();

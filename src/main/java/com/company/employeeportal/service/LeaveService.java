@@ -314,9 +314,9 @@ public class LeaveService {
      * Validate manager permissions for leave approval.
      */
     private void validateManagerPermissions(User manager, Leave leave) {
-        // Check if user has manager or admin role
-        if (manager.getRole() != Role.MANAGER && manager.getRole() != Role.ADMIN) {
-            throw new UnauthorizedAccessException("Only managers and administrators can approve leave requests");
+        // Check if user has HR role
+        if (manager.getRole() != Role.HR) {
+            throw new UnauthorizedAccessException("Only HR can approve leave requests");
         }
 
         // Prevent self-approval
@@ -346,8 +346,8 @@ public class LeaveService {
             return true;
         }
 
-        // Managers and admins can access all leaves
-        return user.getRole() == Role.MANAGER || user.getRole() == Role.ADMIN;
+        // HR can access all leaves
+        return user.getRole() == Role.HR;
     }
 
     /**

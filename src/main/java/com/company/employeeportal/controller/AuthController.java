@@ -250,4 +250,31 @@ public class AuthController {
             return ResponseEntity.badRequest().body(error);
         }
     }
+
+    /**
+     * Validate JWT token
+     */
+    @GetMapping("/validate")
+    public ResponseEntity<?> validateToken() {
+        try {
+            // If we reach here, the JWT filter has already validated the token
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null && authentication.isAuthenticated()) {
+                Map<String, String> response = new HashMap<>();
+                response.put("status", "valid");
+                response.put("message", "Token is valid");
+                return ResponseEntity.ok(response);
+            } else {
+                Map<String, String> error = new HashMap<>();
+                error.put("error", "Invalid token");
+                error.put("message", "Token validation failed");
+                return ResponseEntity.badRequest().body(error);
+            }
+        } catch (Exception e) {
+            Map<String, String> error = new HashMap<>();
+            error.put("error", "Token validation failed");
+            error.put("message", "An error occurred during token validation");
+            return ResponseEntity.badRequest().body(error);
+        }
+    }
 }

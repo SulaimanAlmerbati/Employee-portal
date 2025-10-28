@@ -89,8 +89,8 @@ public class AdminService {
         metrics.setTotalUsers(userRepository.count());
         metrics.setActiveUsers(userRepository.countByActiveTrue());
         metrics.setTotalEmployees(userRepository.countByRoleAndActiveTrue(Role.EMPLOYEE));
-        metrics.setTotalManagers(userRepository.countByRoleAndActiveTrue(Role.MANAGER));
-        metrics.setTotalAdmins(userRepository.countByRoleAndActiveTrue(Role.ADMIN));
+        metrics.setTotalManagers(userRepository.countByRoleAndActiveTrue(Role.HR));
+        metrics.setTotalAdmins(userRepository.countByRoleAndActiveTrue(Role.IT_ADMIN));
         
         logger.debug("User metrics calculated: {} total users, {} active users", 
                     metrics.getTotalUsers(), metrics.getActiveUsers());
@@ -215,8 +215,8 @@ public class AdminService {
      */
     private boolean checkSystemHealth() {
         try {
-            // Check if we have at least one admin user
-            long adminCount = userRepository.countByRoleAndActiveTrue(Role.ADMIN);
+            // Check if we have at least one IT admin user
+            long adminCount = userRepository.countByRoleAndActiveTrue(Role.IT_ADMIN);
             if (adminCount == 0) {
                 logger.warn("No active admin users found");
                 return false;
@@ -249,8 +249,9 @@ public class AdminService {
             // Role breakdown
             Map<String, Long> roleBreakdown = new HashMap<>();
             roleBreakdown.put("EMPLOYEE", userRepository.countByRoleAndActiveTrue(Role.EMPLOYEE));
-            roleBreakdown.put("MANAGER", userRepository.countByRoleAndActiveTrue(Role.MANAGER));
-            roleBreakdown.put("ADMIN", userRepository.countByRoleAndActiveTrue(Role.ADMIN));
+            roleBreakdown.put("HR", userRepository.countByRoleAndActiveTrue(Role.HR));
+            roleBreakdown.put("IT_ADMIN", userRepository.countByRoleAndActiveTrue(Role.IT_ADMIN));
+            roleBreakdown.put("FINANCE", userRepository.countByRoleAndActiveTrue(Role.FINANCE));
             stats.put("roleBreakdown", roleBreakdown);
             
             // Department breakdown

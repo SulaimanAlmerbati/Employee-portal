@@ -96,7 +96,7 @@ public class UserService {
         User existingUser = getUserProfile(userId);
         
         // Check if user is updating their own profile or if admin is updating
-        if (!existingUser.getId().equals(currentUser.getId()) && !currentUser.isAdmin()) {
+        if (!existingUser.getId().equals(currentUser.getId()) && !currentUser.isItAdmin()) {
             throw new UnauthorizedAccessException("You can only update your own profile");
         }
 
@@ -105,7 +105,7 @@ public class UserService {
 
         // Log profile modification attempt for audit purposes (Requirement 2.5)
         logger.info("User profile update attempt - User ID: {}, Modified by: {}, Admin: {}", 
-                   userId, currentUser.getId(), currentUser.isAdmin());
+                   userId, currentUser.getId(), currentUser.isItAdmin());
 
         // Validate and sanitize input
         validateUserProfileUpdateInput(updateRequest);
@@ -120,7 +120,7 @@ public class UserService {
         }
 
         // Admin can update additional fields
-        if (currentUser.isAdmin()) {
+        if (currentUser.isItAdmin()) {
             if (StringUtils.hasText(updateRequest.getDepartment())) {
                 existingUser.setDepartment(sanitizeInput(updateRequest.getDepartment().trim()));
             }
@@ -159,13 +159,13 @@ public class UserService {
         User existingUser = getUserProfile(userId);
         
         // Check if user is updating their own profile or if admin is updating
-        if (!existingUser.getId().equals(currentUser.getId()) && !currentUser.isAdmin()) {
+        if (!existingUser.getId().equals(currentUser.getId()) && !currentUser.isItAdmin()) {
             throw new UnauthorizedAccessException("You can only update your own profile");
         }
 
         // Log profile modification attempt for audit purposes (Requirement 2.5)
         logger.info("User profile update attempt - User ID: {}, Modified by: {}, Admin: {}", 
-                   userId, currentUser.getId(), currentUser.isAdmin());
+                   userId, currentUser.getId(), currentUser.isItAdmin());
 
         // Validate and sanitize input
         validateUserRequestInput(userRequest);
@@ -180,7 +180,7 @@ public class UserService {
         }
 
         // Admin can update additional fields
-        if (currentUser.isAdmin()) {
+        if (currentUser.isItAdmin()) {
             if (StringUtils.hasText(userRequest.getDepartment())) {
                 existingUser.setDepartment(sanitizeInput(userRequest.getDepartment().trim()));
             }
@@ -219,13 +219,13 @@ public class UserService {
         User existingUser = getUserProfile(userId);
         
         // Check if user is updating their own profile or if admin is updating
-        if (!existingUser.getId().equals(currentUser.getId()) && !currentUser.isAdmin()) {
+        if (!existingUser.getId().equals(currentUser.getId()) && !currentUser.isItAdmin()) {
             throw new UnauthorizedAccessException("You can only update your own profile");
         }
 
         // Log profile modification attempt for audit purposes (Requirement 2.5)
         logger.info("User profile update attempt - User ID: {}, Modified by: {}, Admin: {}", 
-                   userId, currentUser.getId(), currentUser.isAdmin());
+                   userId, currentUser.getId(), currentUser.isItAdmin());
 
         // Validate and sanitize input
         validateUserInput(updatedUser);
@@ -240,7 +240,7 @@ public class UserService {
         }
 
         // Admin can update additional fields
-        if (currentUser.isAdmin()) {
+        if (currentUser.isItAdmin()) {
             if (StringUtils.hasText(updatedUser.getDepartment())) {
                 existingUser.setDepartment(sanitizeInput(updatedUser.getDepartment().trim()));
             }
@@ -274,7 +274,7 @@ public class UserService {
      * @throws EmailAlreadyExistsException if email already exists
      */
     public UserResponse createUser(UserRequest userRequest, User currentUser) {
-        if (!currentUser.isAdmin()) {
+        if (!currentUser.isItAdmin()) {
             throw new UnauthorizedAccessException("Only administrators can create users");
         }
 
@@ -342,7 +342,7 @@ public class UserService {
      * @throws EmailAlreadyExistsException if email already exists
      */
     public User createUser(User newUser, User currentUser) {
-        if (!currentUser.isAdmin()) {
+        if (!currentUser.isItAdmin()) {
             throw new UnauthorizedAccessException("Only administrators can create users");
         }
 
@@ -403,7 +403,7 @@ public class UserService {
      * @throws UserNotFoundException if user not found
      */
     public User updateUserByAdmin(Long userId, User updatedUser, User currentUser) {
-        if (!currentUser.isAdmin()) {
+        if (!currentUser.isItAdmin()) {
             throw new UnauthorizedAccessException("Only administrators can update user details");
         }
 
@@ -453,15 +453,15 @@ public class UserService {
         User user = getUserProfile(userId);
         
         // Check if user is changing their own password or if admin is changing
-        if (!user.getId().equals(currentUser.getId()) && !currentUser.isAdmin()) {
+        if (!user.getId().equals(currentUser.getId()) && !currentUser.isItAdmin()) {
             throw new UnauthorizedAccessException("You can only change your own password");
         }
 
         logger.info("Password change attempt - User ID: {}, Changed by: {}, Admin: {}", 
-                   userId, currentUser.getId(), currentUser.isAdmin());
+                   userId, currentUser.getId(), currentUser.isItAdmin());
 
         // For non-admin users, verify current password
-        if (!currentUser.isAdmin() && !passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())) {
+        if (!currentUser.isItAdmin() && !passwordEncoder.matches(changePasswordRequest.getCurrentPassword(), user.getPassword())) {
             logger.warn("Password change failed - incorrect current password for User ID: {}", userId);
             throw new IllegalArgumentException("Current password is incorrect");
         }
@@ -490,15 +490,15 @@ public class UserService {
         User user = getUserProfile(userId);
         
         // Check if user is changing their own password or if admin is changing
-        if (!user.getId().equals(currentUser.getId()) && !currentUser.isAdmin()) {
+        if (!user.getId().equals(currentUser.getId()) && !currentUser.isItAdmin()) {
             throw new UnauthorizedAccessException("You can only change your own password");
         }
 
         logger.info("Password change attempt - User ID: {}, Changed by: {}, Admin: {}", 
-                   userId, currentUser.getId(), currentUser.isAdmin());
+                   userId, currentUser.getId(), currentUser.isItAdmin());
 
         // For non-admin users, verify current password
-        if (!currentUser.isAdmin() && !passwordEncoder.matches(currentPassword, user.getPassword())) {
+        if (!currentUser.isItAdmin() && !passwordEncoder.matches(currentPassword, user.getPassword())) {
             logger.warn("Password change failed - incorrect current password for User ID: {}", userId);
             throw new IllegalArgumentException("Current password is incorrect");
         }
@@ -522,7 +522,7 @@ public class UserService {
      * @throws UserNotFoundException if user not found
      */
     public void deactivateUser(Long userId, User currentUser) {
-        if (!currentUser.isAdmin()) {
+        if (!currentUser.isItAdmin()) {
             throw new UnauthorizedAccessException("Only administrators can deactivate users");
         }
 
@@ -540,7 +540,7 @@ public class UserService {
      * @throws UserNotFoundException if user not found
      */
     public void reactivateUser(Long userId, User currentUser) {
-        if (!currentUser.isAdmin()) {
+        if (!currentUser.isItAdmin()) {
             throw new UnauthorizedAccessException("Only administrators can reactivate users");
         }
 
@@ -563,7 +563,7 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public List<UserResponse> getAllActiveUsersResponse(User currentUser) {
-        if (!currentUser.isAdmin()) {
+        if (!currentUser.isItAdmin()) {
             throw new UnauthorizedAccessException("Only administrators can view all users");
         }
         return userRepository.findByActiveTrue().stream()
@@ -580,7 +580,7 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public List<User> getAllActiveUsers(User currentUser) {
-        if (!currentUser.isAdmin()) {
+        if (!currentUser.isItAdmin()) {
             throw new UnauthorizedAccessException("Only administrators can view all users");
         }
         return userRepository.findByActiveTrue();
@@ -596,7 +596,7 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public Page<UserResponse> getUsersWithPaginationResponse(Pageable pageable, User currentUser) {
-        if (!currentUser.isAdmin()) {
+        if (!currentUser.isItAdmin()) {
             throw new UnauthorizedAccessException("Only administrators can view all users");
         }
         return userRepository.findByActive(true, pageable)
@@ -613,7 +613,7 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public Page<User> getUsersWithPagination(Pageable pageable, User currentUser) {
-        if (!currentUser.isAdmin()) {
+        if (!currentUser.isItAdmin()) {
             throw new UnauthorizedAccessException("Only administrators can view all users");
         }
         return userRepository.findByActive(true, pageable);
@@ -630,7 +630,7 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public Page<User> searchUsers(String searchTerm, Pageable pageable, User currentUser) {
-        if (!currentUser.isAdmin()) {
+        if (!currentUser.isItAdmin()) {
             throw new UnauthorizedAccessException("Only administrators can search users");
         }
         return userRepository.searchByNameOrEmail(searchTerm, true, pageable);
@@ -646,7 +646,7 @@ public class UserService {
      */
     @Transactional(readOnly = true)
     public List<User> getUsersByRole(Role role, User currentUser) {
-        if (!currentUser.isAdmin()) {
+        if (!currentUser.isItAdmin()) {
             throw new UnauthorizedAccessException("Only administrators can view users by role");
         }
         return userRepository.findByRoleAndActiveTrue(role);

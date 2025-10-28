@@ -5,6 +5,7 @@ package com.company.employeeportal.model;
  */
 public enum Role {
     EMPLOYEE,
-    MANAGER,
-    ADMIN
+    HR,
+    IT_ADMIN,
+    FINANCE
 }

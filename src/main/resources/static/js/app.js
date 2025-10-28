@@ -20,29 +20,8 @@ class EmployeePortalApp {
     }
 
     checkAuthentication() {
-        if (this.token) {
-            // Validate token if present
-            this.validateToken();
-        }
-    }
-
-    async validateToken() {
-        try {
-            const response = await fetch(`${this.apiBaseUrl}/auth/validate`, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${this.token}`,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            if (!response.ok) {
-                this.logout();
-            }
-        } catch (error) {
-            console.error('Token validation failed:', error);
-            this.logout();
-        }
+        // Skip token validation - let API calls handle authentication
+        // If token is invalid, API calls will fail and redirect to login
     }
 
     async apiCall(endpoint, options = {}) {

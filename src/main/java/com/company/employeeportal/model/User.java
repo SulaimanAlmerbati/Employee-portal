@@ -228,12 +228,16 @@ public class User {
     }
 
     // Helper methods
-    public boolean isAdmin() {
-        return Role.ADMIN.equals(this.role);
+    public boolean isItAdmin() {
+        return Role.IT_ADMIN.equals(this.role);
     }
 
-    public boolean isManager() {
-        return Role.MANAGER.equals(this.role) || isAdmin();
+    public boolean isHR() {
+        return Role.HR.equals(this.role);
+    }
+
+    public boolean isFinance() {
+        return Role.FINANCE.equals(this.role);
     }
 
     public boolean isEmployee() {

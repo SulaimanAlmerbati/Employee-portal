@@ -64,8 +64,8 @@ public class AnnouncementService {
         User creator = userRepository.findById(creatorId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + creatorId));
 
-        if (creator.getRole() != Role.ADMIN) {
-            throw new UnauthorizedAccessException("Only administrators can create announcements");
+        if (creator.getRole() != Role.HR) {
+            throw new UnauthorizedAccessException("Only HR can create announcements");
         }
 
         Announcement announcement = new Announcement(request.getTitle(), request.getContent(), creator);
@@ -121,8 +121,8 @@ public class AnnouncementService {
         User requester = userRepository.findById(requesterId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + requesterId));
 
-        if (requester.getRole() != Role.ADMIN) {
-            throw new UnauthorizedAccessException("Only administrators can view all announcements");
+        if (requester.getRole() != Role.HR) {
+            throw new UnauthorizedAccessException("Only HR can view all announcements");
         }
 
         Page<Announcement> announcements = announcementRepository.findAllByOrderByCreatedAtDesc(pageable);
@@ -206,8 +206,8 @@ public class AnnouncementService {
         User updater = userRepository.findById(updaterId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + updaterId));
 
-        if (updater.getRole() != Role.ADMIN) {
-            throw new UnauthorizedAccessException("Only administrators can update announcements");
+        if (updater.getRole() != Role.HR) {
+            throw new UnauthorizedAccessException("Only HR can update announcements");
         }
 
         Announcement announcement = announcementRepository.findById(id)
@@ -235,8 +235,8 @@ public class AnnouncementService {
         User deleter = userRepository.findById(deleterId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + deleterId));
 
-        if (deleter.getRole() != Role.ADMIN) {
-            throw new UnauthorizedAccessException("Only administrators can delete announcements");
+        if (deleter.getRole() != Role.HR) {
+            throw new UnauthorizedAccessException("Only HR can delete announcements");
         }
 
         Announcement announcement = announcementRepository.findById(id)
@@ -262,8 +262,8 @@ public class AnnouncementService {
         User activator = userRepository.findById(activatorId)
                 .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + activatorId));
 
-        if (activator.getRole() != Role.ADMIN) {
-            throw new UnauthorizedAccessException("Only administrators can reactivate announcements");
+        if (activator.getRole() != Role.HR) {
+            throw new UnauthorizedAccessException("Only HR can reactivate announcements");
         }
 
         Announcement announcement = announcementRepository.findById(id)

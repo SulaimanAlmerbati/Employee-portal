@@ -81,43 +81,52 @@ public class SecurityConfig {
         
         http.authorizeHttpRequests(authz -> authz
                 // Public endpoints
-                .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/api/auth/login", "/api/auth/refresh").permitAll()
+                .requestMatchers("/api/auth/logout", "/api/auth/validate").authenticated()
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/actuator/health").permitAll()
                 .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                .requestMatchers("/login", "/").permitAll()
+                .requestMatchers("/login", "/", "/dashboard").permitAll()
                 
-                // Employee endpoints - accessible by all authenticated users (EMPLOYEE, MANAGER, ADMIN)
-                .requestMatchers("/api/users/profile").hasAnyRole("EMPLOYEE", "MANAGER", "ADMIN")
-                .requestMatchers("/api/leaves/my-requests").hasAnyRole("EMPLOYEE", "MANAGER", "ADMIN")
-                .requestMatchers("/api/leaves/request").hasAnyRole("EMPLOYEE", "MANAGER", "ADMIN")
-                .requestMatchers("/api/payroll/my-payslips").hasAnyRole("EMPLOYEE", "MANAGER", "ADMIN")
-                .requestMatchers("/api/payroll/payslip/**").hasAnyRole("EMPLOYEE", "MANAGER", "ADMIN")
-                .requestMatchers("/api/announcements").hasAnyRole("EMPLOYEE", "MANAGER", "ADMIN")
+                // Employee endpoints - accessible by all authenticated users
+                .requestMatchers("/api/users/profile").hasAnyRole("EMPLOYEE", "HR", "IT_ADMIN", "FINANCE")
+                .requestMatchers("/api/leaves/my-requests").hasAnyRole("EMPLOYEE", "HR", "IT_ADMIN", "FINANCE")
+                .requestMatchers("/api/leaves/request").hasAnyRole("EMPLOYEE", "HR", "IT_ADMIN", "FINANCE")
+                .requestMatchers("/api/payroll/my-payslips").hasAnyRole("EMPLOYEE", "HR", "IT_ADMIN", "FINANCE")
+                .requestMatchers("/api/payroll/payslip/**").hasAnyRole("EMPLOYEE", "HR", "IT_ADMIN", "FINANCE")
+                .requestMatchers("/api/announcements").hasAnyRole("EMPLOYEE", "HR", "IT_ADMIN", "FINANCE")
                 
-                // Manager endpoints - accessible by managers and admins
-                .requestMatchers("/api/leaves/pending").hasAnyRole("MANAGER", "ADMIN")
-                .requestMatchers("/api/leaves/*/approve").hasAnyRole("MANAGER", "ADMIN")
-                .requestMatchers("/api/leaves/*/reject").hasAnyRole("MANAGER", "ADMIN")
+                // HR endpoints - accessible by HR only
+                .requestMatchers("/api/leaves/pending").hasRole("HR")
+                .requestMatchers("/api/leaves/*/approve").hasRole("HR")
+                .requestMatchers("/api/leaves/*/reject").hasRole("HR")
+                .requestMatchers("/api/announcements/create").hasRole("HR")
+                .requestMatchers("/api/announcements/*/update").hasRole("HR")
+                .requestMatchers("/api/announcements/*/delete").hasRole("HR")
                 
-                // Admin endpoints - accessible by admins only
-                .requestMatchers("/api/users").hasRole("ADMIN")
-                .requestMatchers("/api/users/**").hasRole("ADMIN")
-                .requestMatchers("/api/announcements/**").hasRole("ADMIN")
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                // IT Admin endpoints - accessible by IT Admin only
+                .requestMatchers("/api/users").hasRole("IT_ADMIN")
+                .requestMatchers("/api/users/create").hasRole("IT_ADMIN")
+                .requestMatchers("/api/users/*/update").hasRole("IT_ADMIN")
+                .requestMatchers("/api/users/*/delete").hasRole("IT_ADMIN")
+                .requestMatchers("/api/users/*/activate").hasRole("IT_ADMIN")
+                .requestMatchers("/api/users/*/deactivate").hasRole("IT_ADMIN")
+                
+                // Finance endpoints - accessible by Finance only
+                .requestMatchers("/api/payroll/users/*/payslips").hasRole("FINANCE")
+                .requestMatchers("/api/payroll/create").hasRole("FINANCE")
+                .requestMatchers("/api/payroll/*/update").hasRole("FINANCE")
                 
                 .anyRequest().authenticated()
             )
             .headers(headers -> headers
                 .frameOptions().deny() // Prevent clickjacking attacks
-                .contentTypeOptions().and() // Prevent MIME type sniffing
+                .contentTypeOptions(contentType -> {})
                 .httpStrictTransportSecurity(hstsConfig -> hstsConfig
                     .maxAgeInSeconds(31536000) // 1 year
-                    .includeSubdomains(true)
+                    .includeSubDomains(true)
                     .preload(true)
                 )
-                .and()
-                .headers(h -> h.frameOptions().sameOrigin()) // Allow same origin for H2 console in dev
             );
 
         return http.build();

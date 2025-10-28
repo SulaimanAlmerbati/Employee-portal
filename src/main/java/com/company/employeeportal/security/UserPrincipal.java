@@ -58,15 +58,19 @@ public class UserPrincipal implements UserDetails {
      */
     private static List<GrantedAuthority> mapRoleToAuthorities(Role role) {
         switch (role) {
-            case ADMIN:
+            case IT_ADMIN:
                 return List.of(
-                    new SimpleGrantedAuthority("ROLE_ADMIN"),
-                    new SimpleGrantedAuthority("ROLE_MANAGER"),
+                    new SimpleGrantedAuthority("ROLE_IT_ADMIN"),
                     new SimpleGrantedAuthority("ROLE_EMPLOYEE")
                 );
-            case MANAGER:
+            case HR:
                 return List.of(
-                    new SimpleGrantedAuthority("ROLE_MANAGER"),
+                    new SimpleGrantedAuthority("ROLE_HR"),
+                    new SimpleGrantedAuthority("ROLE_EMPLOYEE")
+                );
+            case FINANCE:
+                return List.of(
+                    new SimpleGrantedAuthority("ROLE_FINANCE"),
                     new SimpleGrantedAuthority("ROLE_EMPLOYEE")
                 );
             case EMPLOYEE:

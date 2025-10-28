@@ -118,8 +118,8 @@ public class NotificationService {
             String subject = "New Leave Request Pending Approval - " + leave.getUser().getName();
             String htmlContent = generateEmailFromTemplate("leave-manager-notification", createLeaveContext(leave));
             
-            // Get all active managers and administrators
-            List<User> managers = userRepository.findByRoleInAndActiveTrue(List.of(Role.MANAGER, Role.ADMIN));
+            // Get all active HR personnel
+            List<User> managers = userRepository.findByRoleInAndActiveTrue(List.of(Role.HR));
             
             for (User manager : managers) {
                 sendEmail(manager.getEmail(), subject, htmlContent);
