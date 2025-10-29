@@ -27,10 +27,12 @@ public class UserRequest {
     @UniqueEmail
     private String email;
 
+    @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Password must be at least 8 characters")
     @StrongPassword
     private String password;
 
+    @NotNull(message = "Role is required")
     private Role role;
 
     @Size(max = 100, message = "Department must not exceed 100 characters")
@@ -112,5 +114,19 @@ public class UserRequest {
 
     public void setJoinDate(LocalDate joinDate) {
         this.joinDate = joinDate;
+    }
+
+    @Override
+    public String toString() {
+        return "UserRequest{" +
+                "name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + (password != null ? "[HIDDEN]" : "null") + '\'' +
+                ", role=" + role +
+                ", department='" + department + '\'' +
+                ", position='" + position + '\'' +
+                ", contactInfo='" + contactInfo + '\'' +
+                ", joinDate=" + joinDate +
+                '}';
     }
 }

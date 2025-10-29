@@ -122,8 +122,9 @@ BeforeEach
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.content.length()").value(2))
                 .andExpect(jsonPath("$.totalElements").value(2));
-    }    @T
-est
+    }
+    
+    @Test
     @WithMockUser(username = "john.doe@company.com", roles = "EMPLOYEE")
     void getPayslipById_ShouldReturnPayslip_WhenAuthorized() throws Exception {
         // Arrange
