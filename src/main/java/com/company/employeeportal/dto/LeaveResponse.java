@@ -22,6 +22,11 @@ public class LeaveResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private long durationInDays;
+    
+    // User information fields (for HR management)
+    private String userName;
+    private String userEmail;
+    private String userDepartment;
 
     // Constructors
     public LeaveResponse() {}
@@ -132,6 +137,30 @@ public class LeaveResponse {
         this.durationInDays = durationInDays;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public String getUserDepartment() {
+        return userDepartment;
+    }
+
+    public void setUserDepartment(String userDepartment) {
+        this.userDepartment = userDepartment;
+    }
+
     @Override
     public String toString() {
         return "LeaveResponse{" +
@@ -141,6 +170,7 @@ public class LeaveResponse {
                 ", endDate=" + endDate +
                 ", status=" + status +
                 ", durationInDays=" + durationInDays +
+                ", userName='" + userName + '\'' +
                 '}';
     }
 }
