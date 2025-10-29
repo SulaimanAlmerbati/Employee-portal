@@ -98,7 +98,7 @@ public class DataInitializer implements CommandLineRunner {
             logger.info("Created Finance user: {}", financeUser.getEmail());
 
             // Create additional test employees
-            createTestEmployee("Alice Johnson", "alice@company.com", "Engineering", "Senior Developer");
+            createTestEmployee("Alice Johnson", "alice@", "Engineering", "Senior Developer");
             createTestEmployee("Bob Smith", "bob@company.com", "Marketing", "Marketing Specialist");
             createTestEmployee("Carol Davis", "carol@company.com", "Finance", "Financial Analyst");
 
