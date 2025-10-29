@@ -33,7 +33,7 @@ class PdfGenerationServiceTest {
         testEmployee = new User();
         testEmployee.setId(1L);
         testEmployee.setName("John Doe");
-        testEmployee.setEmail("john.doe@company.com");
+        testEmployee.setEmail("john.doe@array.world");
         testEmployee.setRole(Role.EMPLOYEE);
         testEmployee.setDepartment("IT");
         testEmployee.setPosition("Senior Developer");

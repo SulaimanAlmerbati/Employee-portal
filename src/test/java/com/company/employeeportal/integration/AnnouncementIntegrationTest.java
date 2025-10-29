@@ -54,9 +54,9 @@ class AnnouncementIntegrationTest {
         userRepository.deleteAll();
 
         // Create test users
-        adminUser = createUser("admin@company.com", "Admin User", Role.ADMIN);
-        employeeUser = createUser("employee@company.com", "Employee User", Role.EMPLOYEE);
-        managerUser = createUser("manager@company.com", "Manager User", Role.MANAGER);
+        adminUser = createUser("admin@array.world", "Admin User", Role.ADMIN);
+        employeeUser = createUser("employee@array.world", "Employee User", Role.EMPLOYEE);
+        managerUser = createUser("manager@array.world", "Manager User", Role.MANAGER);
 
         // Create test announcements
         createTestAnnouncements();

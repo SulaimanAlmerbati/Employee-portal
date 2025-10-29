@@ -58,7 +58,7 @@ BeforeEach
         testEmployee = new User();
         testEmployee.setId(1L);
         testEmployee.setName("John Doe");
-        testEmployee.setEmail("john.doe@company.com");
+        testEmployee.setEmail("john.doe@array.world");
         testEmployee.setRole(Role.EMPLOYEE);
         testEmployee.setDepartment("IT");
         testEmployee.setPosition("Developer");
@@ -86,11 +86,11 @@ BeforeEach
     }
 
     @Test
-    @WithMockUser(username = "john.doe@company.com", roles = "EMPLOYEE")
+    @WithMockUser(username = "john.doe@array.world", roles = "EMPLOYEE")
     void getMyPayslips_ShouldReturnPayslips_WhenAuthenticated() throws Exception {
         // Arrange
         List<Payroll> payslips = Arrays.asList(testPayroll1, testPayroll2);
-        when(payrollService.getMyPayslips("john.doe@company.com")).thenReturn(payslips);
+        when(payrollService.getMyPayslips("john.doe@array.world")).thenReturn(payslips);
 
         // Act & Assert
         mockMvc.perform(get("/api/payroll/my-payslips")
@@ -105,12 +105,12 @@ BeforeEach
     }
 
     @Test
-    @WithMockUser(username = "john.doe@company.com", roles = "EMPLOYEE")
+    @WithMockUser(username = "john.doe@array.world", roles = "EMPLOYEE")
     void getMyPayslipsPaginated_ShouldReturnPaginatedResults() throws Exception {
         // Arrange
         List<Payroll> payslips = Arrays.asList(testPayroll1, testPayroll2);
         Page<Payroll> payrollPage = new PageImpl<>(payslips);
-        when(payrollService.getMyPayslips(eq("john.doe@company.com"), eq(0), eq(10)))
+        when(payrollService.getMyPayslips(eq("john.doe@array.world"), eq(0), eq(10)))
                 .thenReturn(payrollPage);
 
         // Act & Assert
@@ -125,10 +125,10 @@ BeforeEach
     }
     
     @Test
-    @WithMockUser(username = "john.doe@company.com", roles = "EMPLOYEE")
+    @WithMockUser(username = "john.doe@array.world", roles = "EMPLOYEE")
     void getPayslipById_ShouldReturnPayslip_WhenAuthorized() throws Exception {
         // Arrange
-        when(payrollService.getPayslipById(1L, "john.doe@company.com")).thenReturn(testPayroll1);
+        when(payrollService.getPayslipById(1L, "john.doe@array.world")).thenReturn(testPayroll1);
 
         // Act & Assert
         mockMvc.perform(get("/api/payroll/payslip/1")
@@ -141,10 +141,10 @@ BeforeEach
     }
 
     @Test
-    @WithMockUser(username = "john.doe@company.com", roles = "EMPLOYEE")
+    @WithMockUser(username = "john.doe@array.world", roles = "EMPLOYEE")
     void getPayslipById_ShouldReturnForbidden_WhenAccessDenied() throws Exception {
         // Arrange
-        when(payrollService.getPayslipById(1L, "john.doe@company.com"))
+        when(payrollService.getPayslipById(1L, "john.doe@array.world"))
                 .thenThrow(new PayrollAccessException("Access denied"));
 
         // Act & Assert
@@ -154,11 +154,11 @@ BeforeEach
     }
 
     @Test
-    @WithMockUser(username = "john.doe@company.com", roles = "EMPLOYEE")
+    @WithMockUser(username = "john.doe@array.world", roles = "EMPLOYEE")
     void getPayslipsByYear_ShouldReturnPayslipsForYear() throws Exception {
         // Arrange
         List<Payroll> payslips = Arrays.asList(testPayroll1, testPayroll2);
-        when(payrollService.getPayslipsByYear("john.doe@company.com", 2024)).thenReturn(payslips);
+        when(payrollService.getPayslipsByYear("john.doe@array.world", 2024)).thenReturn(payslips);
 
         // Act & Assert
         mockMvc.perform(get("/api/payroll/my-payslips/year/2024")
@@ -169,11 +169,11 @@ BeforeEach
     }
 
     @Test
-    @WithMockUser(username = "john.doe@company.com", roles = "EMPLOYEE")
+    @WithMockUser(username = "john.doe@array.world", roles = "EMPLOYEE")
     void downloadPayslipPdf_ShouldReturnPdf_WhenAuthorized() throws Exception {
         // Arrange
         byte[] pdfBytes = "PDF content".getBytes();
-        when(payrollService.getPayslipById(1L, "john.doe@company.com")).thenReturn(testPayroll1);
+        when(payrollService.getPayslipById(1L, "john.doe@array.world")).thenReturn(testPayroll1);
         when(pdfGenerationService.generatePayslipPdf(testPayroll1)).thenReturn(pdfBytes);
 
         // Act & Assert

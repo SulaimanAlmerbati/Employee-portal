@@ -25,7 +25,7 @@ class AnnouncementTest {
         creator = new User();
         creator.setId(1L);
         creator.setName("Admin User");
-        creator.setEmail("admin@company.com");
+        creator.setEmail("admin@array.world");
         creator.setRole(Role.ADMIN);
         
         announcement = new Announcement();

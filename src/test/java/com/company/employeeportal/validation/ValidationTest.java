@@ -26,7 +26,7 @@ public class ValidationTest {
         // Given
         UserRequest userRequest = new UserRequest();
         userRequest.setName("John Doe");
-        userRequest.setEmail("john.doe@company.com");
+        userRequest.setEmail("john.doe@array.world");
         userRequest.setPassword("Password123!");
 
         // When
@@ -41,7 +41,7 @@ public class ValidationTest {
         // Given
         UserRequest userRequest = new UserRequest();
         userRequest.setName("John123"); // Contains numbers
-        userRequest.setEmail("john.doe@company.com");
+        userRequest.setEmail("john.doe@array.world");
         userRequest.setPassword("Password123!");
 
         // When
@@ -58,7 +58,7 @@ public class ValidationTest {
         // Given
         UserRequest userRequest = new UserRequest();
         userRequest.setName("John Doe");
-        userRequest.setEmail("john.doe@company.com");
+        userRequest.setEmail("john.doe@array.world");
         userRequest.setPassword("Password123!");
         userRequest.setContactInfo("123-456-7890");
 
@@ -74,7 +74,7 @@ public class ValidationTest {
         // Given
         UserRequest userRequest = new UserRequest();
         userRequest.setName("John Doe");
-        userRequest.setEmail("john.doe@company.com");
+        userRequest.setEmail("john.doe@array.world");
         userRequest.setPassword("Password123!");
         userRequest.setContactInfo("contact@example.com");
 
@@ -90,7 +90,7 @@ public class ValidationTest {
         // Given
         UserRequest userRequest = new UserRequest();
         userRequest.setName("John Doe");
-        userRequest.setEmail("john.doe@company.com");
+        userRequest.setEmail("john.doe@array.world");
         userRequest.setPassword("Password123!");
 
         // When
@@ -105,7 +105,7 @@ public class ValidationTest {
         // Given
         UserRequest userRequest = new UserRequest();
         userRequest.setName("John Doe");
-        userRequest.setEmail("john.doe@company.com");
+        userRequest.setEmail("john.doe@array.world");
         userRequest.setPassword("password"); // No uppercase, no numbers, no special chars
 
         // When

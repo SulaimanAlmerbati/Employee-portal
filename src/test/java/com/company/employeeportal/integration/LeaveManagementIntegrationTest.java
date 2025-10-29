@@ -65,7 +65,7 @@ class LeaveManagementIntegrationTest {
         // Create test users
         employee = new User();
         employee.setName("John Employee");
-        employee.setEmail("john.employee@company.com");
+        employee.setEmail("john.employee@array.world");
         employee.setPassword("password");
         employee.setRole(Role.EMPLOYEE);
         employee.setDepartment("IT");
@@ -75,7 +75,7 @@ class LeaveManagementIntegrationTest {
 
         manager = new User();
         manager.setName("Jane Manager");
-        manager.setEmail("jane.manager@company.com");
+        manager.setEmail("jane.manager@array.world");
         manager.setPassword("password");
         manager.setRole(Role.MANAGER);
         manager.setDepartment("IT");
@@ -85,7 +85,7 @@ class LeaveManagementIntegrationTest {
 
         admin = new User();
         admin.setName("Admin User");
-        admin.setEmail("admin@company.com");
+        admin.setEmail("admin@array.world");
         admin.setPassword("password");
         admin.setRole(Role.ADMIN);
         admin.setDepartment("HR");
@@ -295,7 +295,7 @@ class LeaveManagementIntegrationTest {
         // Step 2: Another employee attempts to approve the leave
         User anotherEmployee = new User();
         anotherEmployee.setName("Another Employee");
-        anotherEmployee.setEmail("another@company.com");
+        anotherEmployee.setEmail("another@array.world");
         anotherEmployee.setPassword("password");
         anotherEmployee.setRole(Role.EMPLOYEE);
         anotherEmployee.setDepartment("IT");

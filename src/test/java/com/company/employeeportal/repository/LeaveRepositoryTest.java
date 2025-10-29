@@ -30,7 +30,7 @@ class LeaveRepositoryTest {
     void setUp() {
         employee = new User();
         employee.setName("John Employee");
-        employee.setEmail("john@company.com");
+        employee.setEmail("john@array.world");
         employee.setPassword("password123");
         employee.setRole(Role.EMPLOYEE);
         employee.setDepartment("IT");
@@ -38,7 +38,7 @@ class LeaveRepositoryTest {
 
         manager = new User();
         manager.setName("Jane Manager");
-        manager.setEmail("jane@company.com");
+        manager.setEmail("jane@array.world");
         manager.setPassword("password456");
         manager.setRole(Role.MANAGER);
         manager.setDepartment("IT");

@@ -33,7 +33,7 @@ class UserRepositoryTest {
     void setUp() {
         employee = new User();
         employee.setName("John Employee");
-        employee.setEmail("john@company.com");
+        employee.setEmail("john@array.world");
         employee.setPassword("password123");
         employee.setRole(Role.EMPLOYEE);
         employee.setDepartment("IT");
@@ -42,7 +42,7 @@ class UserRepositoryTest {
 
         manager = new User();
         manager.setName("Jane Manager");
-        manager.setEmail("jane@company.com");
+        manager.setEmail("jane@array.world");
         manager.setPassword("password456");
         manager.setRole(Role.MANAGER);
         manager.setDepartment("HR");
@@ -51,7 +51,7 @@ class UserRepositoryTest {
 
         admin = new User();
         admin.setName("Admin User");
-        admin.setEmail("admin@company.com");
+        admin.setEmail("admin@array.world");
         admin.setPassword("password789");
         admin.setRole(Role.ADMIN);
         admin.setDepartment("IT");
@@ -65,21 +65,21 @@ class UserRepositoryTest {
 
     @Test
     void testFindByEmail() {
-        Optional<User> found = userRepository.findByEmail("john@company.com");
+        Optional<User> found = userRepository.findByEmail("john@array.world");
         assertTrue(found.isPresent());
         assertEquals("John Employee", found.get().getName());
     }
 
     @Test
     void testFindByEmailNotFound() {
-        Optional<User> found = userRepository.findByEmail("notfound@company.com");
+        Optional<User> found = userRepository.findByEmail("notfound@array.world");
         assertFalse(found.isPresent());
     }
 
     @Test
     void testExistsByEmail() {
-        assertTrue(userRepository.existsByEmail("john@company.com"));
-        assertFalse(userRepository.existsByEmail("notfound@company.com"));
+        assertTrue(userRepository.existsByEmail("john@array.world"));
+        assertFalse(userRepository.existsByEmail("notfound@array.world"));
     }
 
     @Test
@@ -147,16 +147,16 @@ class UserRepositoryTest {
 
         searchResults = userRepository.searchByNameOrEmail("company.com", true, 
                                                           PageRequest.of(0, 10));
-        assertEquals(2, searchResults.getContent().size()); // Both active users have @company.com
+        assertEquals(2, searchResults.getContent().size()); // Both active users have @array.world
     }
 
     @Test
     void testFindByEmailAndActive() {
-        Optional<User> found = userRepository.findByEmailAndActive("john@company.com", true);
+        Optional<User> found = userRepository.findByEmailAndActive("john@array.world", true);
         assertTrue(found.isPresent());
         assertEquals("John Employee", found.get().getName());
 
-        Optional<User> notFound = userRepository.findByEmailAndActive("admin@company.com", true);
+        Optional<User> notFound = userRepository.findByEmailAndActive("admin@array.world", true);
         assertFalse(notFound.isPresent()); // Admin is inactive
     }
 

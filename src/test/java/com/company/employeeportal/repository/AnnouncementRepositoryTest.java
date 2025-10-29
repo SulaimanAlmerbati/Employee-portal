@@ -35,7 +35,7 @@ class AnnouncementRepositoryTest {
     void setUp() {
         admin = new User();
         admin.setName("Admin User");
-        admin.setEmail("admin@company.com");
+        admin.setEmail("admin@array.world");
         admin.setPassword("password123");
         admin.setRole(Role.ADMIN);
         admin.setDepartment("IT");

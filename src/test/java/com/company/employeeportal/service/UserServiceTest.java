@@ -52,7 +52,7 @@ class UserServiceTest {
         testEmployee = new User();
         testEmployee.setId(1L);
         testEmployee.setName("John Doe");
-        testEmployee.setEmail("john.doe@company.com");
+        testEmployee.setEmail("john.doe@array.world");
         testEmployee.setPassword("encodedPassword");
         testEmployee.setRole(Role.EMPLOYEE);
         testEmployee.setDepartment("IT");
@@ -62,7 +62,7 @@ class UserServiceTest {
         testAdmin = new User();
         testAdmin.setId(2L);
         testAdmin.setName("Admin User");
-        testAdmin.setEmail("admin@company.com");
+        testAdmin.setEmail("admin@array.world");
         testAdmin.setPassword("encodedPassword");
         testAdmin.setRole(Role.ADMIN);
         testAdmin.setActive(true);
@@ -70,7 +70,7 @@ class UserServiceTest {
         testManager = new User();
         testManager.setId(3L);
         testManager.setName("Manager User");
-        testManager.setEmail("manager@company.com");
+        testManager.setEmail("manager@array.world");
         testManager.setPassword("encodedPassword");
         testManager.setRole(Role.MANAGER);
         testManager.setActive(true);
@@ -116,16 +116,16 @@ class UserServiceTest {
     @Test
     void getUserByEmail_WhenUserExists_ShouldReturnUser() {
         // Given
-        when(userRepository.findByEmailAndActive("john.doe@company.com", true))
+        when(userRepository.findByEmailAndActive("john.doe@array.world", true))
                 .thenReturn(Optional.of(testEmployee));
 
         // When
-        User result = userService.getUserByEmail("john.doe@company.com");
+        User result = userService.getUserByEmail("john.doe@array.world");
 
         // Then
         assertNotNull(result);
         assertEquals(testEmployee.getEmail(), result.getEmail());
-        verify(userRepository).findByEmailAndActive("john.doe@company.com", true);
+        verify(userRepository).findByEmailAndActive("john.doe@array.world", true);
     }
 
     @Test
@@ -167,13 +167,13 @@ class UserServiceTest {
     @Test
     void createUser_WhenAdminCreatesUser_ShouldCreateSuccessfully() {
         // Given
-        when(userRepository.existsByEmail("new.user@company.com")).thenReturn(false);
+        when(userRepository.existsByEmail("new.user@array.world")).thenReturn(false);
         when(passwordEncoder.encode("Password123!")).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenReturn(testEmployee);
 
         User newUser = new User();
         newUser.setName("New User");
-        newUser.setEmail("new.user@company.com");
+        newUser.setEmail("new.user@array.world");
         newUser.setPassword("Password123!");
         newUser.setRole(Role.EMPLOYEE);
 
@@ -182,7 +182,7 @@ class UserServiceTest {
 
         // Then
         assertNotNull(result);
-        verify(userRepository).existsByEmail("new.user@company.com");
+        verify(userRepository).existsByEmail("new.user@array.world");
         verify(passwordEncoder).encode("Password123!");
         verify(userRepository).save(any(User.class));
     }
@@ -192,7 +192,7 @@ class UserServiceTest {
         // Given
         User newUser = new User();
         newUser.setName("New User");
-        newUser.setEmail("new.user@company.com");
+        newUser.setEmail("new.user@array.world");
         newUser.setPassword("Password123!");
 
         // When & Then
@@ -204,17 +204,17 @@ class UserServiceTest {
     @Test
     void createUser_WhenEmailAlreadyExists_ShouldThrowException() {
         // Given
-        when(userRepository.existsByEmail("existing@company.com")).thenReturn(true);
+        when(userRepository.existsByEmail("existing@array.world")).thenReturn(true);
 
         User newUser = new User();
         newUser.setName("New User");
-        newUser.setEmail("existing@company.com");
+        newUser.setEmail("existing@array.world");
         newUser.setPassword("Password123!");
 
         // When & Then
         assertThrows(EmailAlreadyExistsException.class, 
                 () -> userService.createUser(newUser, testAdmin));
-        verify(userRepository).existsByEmail("existing@company.com");
+        verify(userRepository).existsByEmail("existing@array.world");
         verify(userRepository, never()).save(any());
     }
 
@@ -368,7 +368,7 @@ class UserServiceTest {
         // Given
         User newUser = new User();
         newUser.setName("Test User");
-        newUser.setEmail("test@company.com");
+        newUser.setEmail("test@array.world");
         newUser.setPassword("weak"); // Weak password
 
         // When & Then
@@ -456,13 +456,13 @@ class UserServiceTest {
     @Test
     void createUserWithDTO_WhenAdminCreatesUser_ShouldCreateSuccessfully() {
         // Given
-        when(userRepository.existsByEmail("new.user@company.com")).thenReturn(false);
+        when(userRepository.existsByEmail("new.user@array.world")).thenReturn(false);
         when(passwordEncoder.encode("Password123!")).thenReturn("encodedPassword");
         
         User savedUser = new User();
         savedUser.setId(4L);
         savedUser.setName("New User");
-        savedUser.setEmail("new.user@company.com");
+        savedUser.setEmail("new.user@array.world");
         savedUser.setPassword("encodedPassword");
         savedUser.setRole(Role.EMPLOYEE);
         savedUser.setActive(true);
@@ -471,7 +471,7 @@ class UserServiceTest {
 
         UserRequest userRequest = new UserRequest();
         userRequest.setName("New User");
-        userRequest.setEmail("new.user@company.com");
+        userRequest.setEmail("new.user@array.world");
         userRequest.setPassword("Password123!");
         userRequest.setRole(Role.EMPLOYEE);
 
@@ -482,10 +482,10 @@ class UserServiceTest {
         assertNotNull(result);
         assertEquals(4L, result.getId());
         assertEquals("New User", result.getName());
-        assertEquals("new.user@company.com", result.getEmail());
+        assertEquals("new.user@array.world", result.getEmail());
         assertEquals(Role.EMPLOYEE, result.getRole());
         assertTrue(result.getActive());
-        verify(userRepository).existsByEmail("new.user@company.com");
+        verify(userRepository).existsByEmail("new.user@array.world");
         verify(passwordEncoder).encode("Password123!");
         verify(userRepository).save(any(User.class));
     }
@@ -559,13 +559,13 @@ class UserServiceTest {
         String plainPassword = "Password123!";
         String encodedPassword = "encodedPassword123";
         
-        when(userRepository.existsByEmail("test@company.com")).thenReturn(false);
+        when(userRepository.existsByEmail("test@array.world")).thenReturn(false);
         when(passwordEncoder.encode(plainPassword)).thenReturn(encodedPassword);
         
         User savedUser = new User();
         savedUser.setId(5L);
         savedUser.setName("Test User");
-        savedUser.setEmail("test@company.com");
+        savedUser.setEmail("test@array.world");
         savedUser.setPassword(encodedPassword);
         savedUser.setRole(Role.EMPLOYEE);
         savedUser.setActive(true);
@@ -574,7 +574,7 @@ class UserServiceTest {
 
         User newUser = new User();
         newUser.setName("Test User");
-        newUser.setEmail("test@company.com");
+        newUser.setEmail("test@array.world");
         newUser.setPassword(plainPassword);
 
         // When
@@ -615,7 +615,7 @@ class UserServiceTest {
         String longName = "a".repeat(101); // 101 characters
         User newUser = new User();
         newUser.setName(longName);
-        newUser.setEmail("test@company.com");
+        newUser.setEmail("test@array.world");
         newUser.setPassword("Password123!");
 
         // When & Then
@@ -630,7 +630,7 @@ class UserServiceTest {
         String longDepartment = "a".repeat(101); // 101 characters
         User newUser = new User();
         newUser.setName("Test User");
-        newUser.setEmail("test@company.com");
+        newUser.setEmail("test@array.world");
         newUser.setPassword("Password123!");
         newUser.setDepartment(longDepartment);
 
@@ -646,7 +646,7 @@ class UserServiceTest {
         String longPosition = "a".repeat(101); // 101 characters
         User newUser = new User();
         newUser.setName("Test User");
-        newUser.setEmail("test@company.com");
+        newUser.setEmail("test@array.world");
         newUser.setPassword("Password123!");
         newUser.setPosition(longPosition);
 
@@ -662,7 +662,7 @@ class UserServiceTest {
         String longContactInfo = "a".repeat(201); // 201 characters
         User newUser = new User();
         newUser.setName("Test User");
-        newUser.setEmail("test@company.com");
+        newUser.setEmail("test@array.world");
         newUser.setPassword("Password123!");
         newUser.setContactInfo(longContactInfo);
 
@@ -675,7 +675,7 @@ class UserServiceTest {
     @Test
     void createUser_WhenEmailTooLong_ShouldThrowException() {
         // Given
-        String longEmail = "a".repeat(140) + "@company.com"; // > 150 characters
+        String longEmail = "a".repeat(140) + "@array.world"; // > 150 characters
         User newUser = new User();
         newUser.setName("Test User");
         newUser.setEmail(longEmail);
@@ -692,7 +692,7 @@ class UserServiceTest {
         // Given
         User newUser = new User();
         newUser.setName("");
-        newUser.setEmail("test@company.com");
+        newUser.setEmail("test@array.world");
         newUser.setPassword("Password123!");
 
         // When & Then
@@ -720,7 +720,7 @@ class UserServiceTest {
         // Given
         User newUser = new User();
         newUser.setName("Test User");
-        newUser.setEmail("test@company.com");
+        newUser.setEmail("test@array.world");
         newUser.setPassword("");
 
         // When & Then
@@ -736,7 +736,7 @@ class UserServiceTest {
         // Given
         User newUser = new User();
         newUser.setName("Test User");
-        newUser.setEmail("test@company.com");
+        newUser.setEmail("test@array.world");
         newUser.setPassword("Pass1!"); // Only 6 characters
 
         // When & Then
@@ -750,7 +750,7 @@ class UserServiceTest {
         // Given
         User newUser = new User();
         newUser.setName("Test User");
-        newUser.setEmail("test@company.com");
+        newUser.setEmail("test@array.world");
         newUser.setPassword("password123!"); // No uppercase
 
         // When & Then
@@ -764,7 +764,7 @@ class UserServiceTest {
         // Given
         User newUser = new User();
         newUser.setName("Test User");
-        newUser.setEmail("test@company.com");
+        newUser.setEmail("test@array.world");
         newUser.setPassword("PASSWORD123!"); // No lowercase
 
         // When & Then
@@ -778,7 +778,7 @@ class UserServiceTest {
         // Given
         User newUser = new User();
         newUser.setName("Test User");
-        newUser.setEmail("test@company.com");
+        newUser.setEmail("test@array.world");
         newUser.setPassword("Password!"); // No digit
 
         // When & Then
@@ -792,7 +792,7 @@ class UserServiceTest {
         // Given
         User newUser = new User();
         newUser.setName("Test User");
-        newUser.setEmail("test@company.com");
+        newUser.setEmail("test@array.world");
         newUser.setPassword("Password123"); // No special character
 
         // When & Then
@@ -872,13 +872,13 @@ class UserServiceTest {
     @Test
     void createUser_WhenInputContainsXSS_ShouldSanitize() {
         // Given
-        when(userRepository.existsByEmail("test@company.com")).thenReturn(false);
+        when(userRepository.existsByEmail("test@array.world")).thenReturn(false);
         when(passwordEncoder.encode("Password123!")).thenReturn("encodedPassword");
         
         User savedUser = new User();
         savedUser.setId(6L);
         savedUser.setName("&lt;script&gt;alert(&#x27;xss&#x27;)&lt;&#x2F;script&gt;Test User");
-        savedUser.setEmail("test@company.com");
+        savedUser.setEmail("test@array.world");
         savedUser.setPassword("encodedPassword");
         savedUser.setRole(Role.EMPLOYEE);
         savedUser.setActive(true);
@@ -887,7 +887,7 @@ class UserServiceTest {
 
         User newUser = new User();
         newUser.setName("<script>alert('xss')</script>Test User");
-        newUser.setEmail("test@company.com");
+        newUser.setEmail("test@array.world");
         newUser.setPassword("Password123!");
 
         // When
@@ -1018,13 +1018,13 @@ class UserServiceTest {
     @Test
     void createUser_WhenDefaultValuesSet_ShouldSetCorrectDefaults() {
         // Given
-        when(userRepository.existsByEmail("test@company.com")).thenReturn(false);
+        when(userRepository.existsByEmail("test@array.world")).thenReturn(false);
         when(passwordEncoder.encode("Password123!")).thenReturn("encodedPassword");
         
         User savedUser = new User();
         savedUser.setId(7L);
         savedUser.setName("Test User");
-        savedUser.setEmail("test@company.com");
+        savedUser.setEmail("test@array.world");
         savedUser.setPassword("encodedPassword");
         savedUser.setRole(Role.EMPLOYEE);
         savedUser.setActive(true);
@@ -1034,7 +1034,7 @@ class UserServiceTest {
 
         User newUser = new User();
         newUser.setName("Test User");
-        newUser.setEmail("test@company.com");
+        newUser.setEmail("test@array.world");
         newUser.setPassword("Password123!");
         // No role or joinDate set
 
@@ -1081,13 +1081,13 @@ class UserServiceTest {
     @Test
     void createUserWithDTO_WhenAllValidationPasses_ShouldCreateWithAllFields() {
         // Given
-        when(userRepository.existsByEmail("complete@company.com")).thenReturn(false);
+        when(userRepository.existsByEmail("complete@array.world")).thenReturn(false);
         when(passwordEncoder.encode("CompletePassword123!")).thenReturn("encodedCompletePassword");
         
         User savedUser = new User();
         savedUser.setId(8L);
         savedUser.setName("Complete User");
-        savedUser.setEmail("complete@company.com");
+        savedUser.setEmail("complete@array.world");
         savedUser.setPassword("encodedCompletePassword");
         savedUser.setRole(Role.MANAGER);
         savedUser.setDepartment("HR");
@@ -1100,7 +1100,7 @@ class UserServiceTest {
 
         UserRequest userRequest = new UserRequest();
         userRequest.setName("Complete User");
-        userRequest.setEmail("complete@company.com");
+        userRequest.setEmail("complete@array.world");
         userRequest.setPassword("CompletePassword123!");
         userRequest.setRole(Role.MANAGER);
         userRequest.setDepartment("HR");
@@ -1115,7 +1115,7 @@ class UserServiceTest {
         assertNotNull(result);
         assertEquals(8L, result.getId());
         assertEquals("Complete User", result.getName());
-        assertEquals("complete@company.com", result.getEmail());
+        assertEquals("complete@array.world", result.getEmail());
         assertEquals(Role.MANAGER, result.getRole());
         assertEquals("HR", result.getDepartment());
         assertEquals("HR Manager", result.getPosition());
@@ -1123,7 +1123,7 @@ class UserServiceTest {
         assertEquals(LocalDate.of(2024, 1, 15), result.getJoinDate());
         assertTrue(result.getActive());
         
-        verify(userRepository).existsByEmail("complete@company.com");
+        verify(userRepository).existsByEmail("complete@array.world");
         verify(passwordEncoder).encode("CompletePassword123!");
         verify(userRepository).save(any(User.class));
     }
@@ -1207,7 +1207,7 @@ class UserServiceTest {
         for (int i = 0; i < testPasswords.length; i++) {
             String plainPassword = testPasswords[i];
             String encodedPassword = "encoded" + i;
-            String email = "test" + i + "@company.com";
+            String email = "test" + i + "@array.world";
             
             when(userRepository.existsByEmail(email)).thenReturn(false);
             when(passwordEncoder.encode(plainPassword)).thenReturn(encodedPassword);
@@ -1244,20 +1244,20 @@ class UserServiceTest {
     @Test
     void createUser_WhenRepositorySaveThrowsException_ShouldPropagateException() {
         // Given
-        when(userRepository.existsByEmail("test@company.com")).thenReturn(false);
+        when(userRepository.existsByEmail("test@array.world")).thenReturn(false);
         when(passwordEncoder.encode("Password123!")).thenReturn("encodedPassword");
         when(userRepository.save(any(User.class))).thenThrow(new RuntimeException("Database error"));
 
         User newUser = new User();
         newUser.setName("Test User");
-        newUser.setEmail("test@company.com");
+        newUser.setEmail("test@array.world");
         newUser.setPassword("Password123!");
 
         // When & Then
         assertThrows(RuntimeException.class, 
                 () -> userService.createUser(newUser, testAdmin));
         
-        verify(userRepository).existsByEmail("test@company.com");
+        verify(userRepository).existsByEmail("test@array.world");
         verify(passwordEncoder).encode("Password123!");
         verify(userRepository).save(any(User.class));
     }

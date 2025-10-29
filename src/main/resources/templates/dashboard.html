@@ -562,15 +562,26 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="createUserName" class="form-label">Full Name *</label>
-                                    <input type="text" class="form-control" id="createUserName" required>
+                                    <label for="createUserFirstName" class="form-label">First Name *</label>
+                                    <input type="text" class="form-control" id="createUserFirstName" required>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="createUserEmail" class="form-label">Email *</label>
-                                    <input type="email" class="form-control" id="createUserEmail" required>
+                                    <label for="createUserLastName" class="form-label">Last Name *</label>
+                                    <input type="text" class="form-control" id="createUserLastName" required>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="createUserEmail" class="form-label">Email *</label>
+                                    <input type="email" class="form-control" id="createUserEmail" required readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <!-- Empty column for layout balance -->
                             </div>
                         </div>
                         <div class="row">
@@ -1903,6 +1914,35 @@
                 // Set default join date to today
                 document.getElementById('createUserJoinDate').value = new Date().toISOString().split('T')[0];
                 
+                // Add event listeners for automatic email generation
+                const firstNameField = document.getElementById('createUserFirstName');
+                const lastNameField = document.getElementById('createUserLastName');
+                const emailField = document.getElementById('createUserEmail');
+                
+                // Remove any existing event listeners
+                if (this.generateEmailFromNames) {
+                    firstNameField.removeEventListener('input', this.generateEmailFromNames);
+                    lastNameField.removeEventListener('input', this.generateEmailFromNames);
+                }
+                
+                // Add new event listener function
+                this.generateEmailFromNames = () => {
+                    const firstName = firstNameField.value.trim().toLowerCase().replace(/[^a-z]/g, '');
+                    const lastName = lastNameField.value.trim().toLowerCase().replace(/[^a-z]/g, '');
+                    
+                    if (firstName && lastName) {
+                        emailField.value = `${firstName}.${lastName}@array.world`;
+                    } else if (firstName) {
+                        emailField.value = `${firstName}@array.world`;
+                    } else {
+                        emailField.value = '';
+                    }
+                };
+                
+                // Add event listeners to both name fields
+                firstNameField.addEventListener('input', this.generateEmailFromNames);
+                lastNameField.addEventListener('input', this.generateEmailFromNames);
+                
                 const modal = new bootstrap.Modal(document.getElementById('userCreateModal'));
                 modal.show();
             }
@@ -1915,8 +1955,13 @@
                 const phoneNumber = document.getElementById('createUserContactInfo').value.trim();
                 const fullContactInfo = phoneNumber ? `${countryCode}${phoneNumber}` : null;
                 
+                // Combine first and last names
+                const firstName = document.getElementById('createUserFirstName').value.trim();
+                const lastName = document.getElementById('createUserLastName').value.trim();
+                const fullName = `${firstName} ${lastName}`.trim();
+                
                 const formData = {
-                    name: document.getElementById('createUserName').value.trim(),
+                    name: fullName,
                     email: document.getElementById('createUserEmail').value.trim(),
                     password: document.getElementById('createUserPassword').value,
                     role: document.getElementById('createUserRole').value,

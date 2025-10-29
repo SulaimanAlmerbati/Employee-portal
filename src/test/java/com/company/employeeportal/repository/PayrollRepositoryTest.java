@@ -37,7 +37,7 @@ class PayrollRepositoryTest {
     void setUp() {
         employee = new User();
         employee.setName("John Employee");
-        employee.setEmail("john@company.com");
+        employee.setEmail("john@array.world");
         employee.setPassword("password123");
         employee.setRole(Role.EMPLOYEE);
         employee.setDepartment("IT");

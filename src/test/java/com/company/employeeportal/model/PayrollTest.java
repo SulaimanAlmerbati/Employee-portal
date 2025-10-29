@@ -26,7 +26,7 @@ class PayrollTest {
         user = new User();
         user.setId(1L);
         user.setName("John Doe");
-        user.setEmail("john@company.com");
+        user.setEmail("john@array.world");
         user.setRole(Role.EMPLOYEE);
         
         payroll = new Payroll();
