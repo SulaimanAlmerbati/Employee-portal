@@ -31,7 +31,6 @@ public class Leave {
     private LeaveType leaveType;
 
     @NotNull(message = "Start date is required")
-    @Future(message = "Start date must be in the future")
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 

@@ -275,6 +275,30 @@ public class LeaveService {
                                  rejectedRequests, totalApprovedDays);
     }
 
+    /**
+     * Get all leave requests for HR management.
+     */
+    @Transactional(readOnly = true)
+    public List<LeaveResponse> getAllLeaveRequests() {
+        logger.debug("Retrieving all leave requests for HR management");
+
+        List<Leave> allLeaves = leaveRepository.findAll();
+        return allLeaves.stream()
+                .map(this::convertToResponseWithUserInfo)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * Get all leave requests with pagination for HR management.
+     */
+    @Transactional(readOnly = true)
+    public Page<LeaveResponse> getAllLeaveRequests(Pageable pageable) {
+        logger.debug("Retrieving paginated all leave requests for HR management");
+
+        Page<Leave> allLeaves = leaveRepository.findAll(pageable);
+        return allLeaves.map(this::convertToResponseWithUserInfo);
+    }
+
     // Private helper methods
 
     /**
@@ -286,9 +310,9 @@ public class LeaveService {
             throw new InvalidLeaveRequestException("End date must be after or equal to start date");
         }
 
-        // Check if start date is in the future
-        if (leaveRequest.getStartDate().isBefore(LocalDate.now().plusDays(1))) {
-            throw new InvalidLeaveRequestException("Leave requests must be submitted at least 1 day in advance");
+        // Check if start date is not in the past (allow same day requests)
+        if (leaveRequest.getStartDate().isBefore(LocalDate.now())) {
+            throw new InvalidLeaveRequestException("Leave requests cannot be submitted for past dates");
         }
 
         // Check for overlapping pending or approved leaves
@@ -311,17 +335,17 @@ public class LeaveService {
     }
 
     /**
-     * Validate manager permissions for leave approval.
+     * Validate HR permissions for leave approval.
      */
-    private void validateManagerPermissions(User manager, Leave leave) {
+    private void validateManagerPermissions(User hrUser, Leave leave) {
         // Check if user has HR role
-        if (manager.getRole() != Role.HR) {
-            throw new UnauthorizedAccessException("Only HR can approve leave requests");
+        if (hrUser.getRole() != Role.HR) {
+            throw new UnauthorizedAccessException("Only HR users can approve leave requests");
         }
 
         // Prevent self-approval
-        if (manager.getId().equals(leave.getUser().getId())) {
-            throw new LeaveApprovalException("You cannot approve your own leave request");
+        if (hrUser.getId().equals(leave.getUser().getId())) {
+            throw new LeaveApprovalException("HR users cannot approve their own leave requests");
         }
     }
 
@@ -366,6 +390,17 @@ public class LeaveService {
         response.setCreatedAt(leave.getCreatedAt());
         response.setUpdatedAt(leave.getUpdatedAt());
         response.setDurationInDays(leave.getDurationInDays());
+        return response;
+    }
+
+    /**
+     * Convert Leave entity to LeaveResponse DTO with user information for HR management.
+     */
+    private LeaveResponse convertToResponseWithUserInfo(Leave leave) {
+        LeaveResponse response = convertToResponse(leave);
+        response.setUserName(leave.getUser().getName());
+        response.setUserEmail(leave.getUser().getEmail());
+        response.setUserDepartment(leave.getUser().getDepartment());
         return response;
     }
 
