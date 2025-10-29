@@ -27,7 +27,6 @@ public interface AnnouncementReadStatusRepository extends JpaRepository<Announce
      * Check if user has read a specific announcement.
      */
     boolean existsByAnnouncementAndUser(Announcement announcement, User user);
-    boolean test ();
 
     /**
      * Find all read statuses for a specific user.

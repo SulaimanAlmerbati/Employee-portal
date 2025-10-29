@@ -10,7 +10,7 @@
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav id="mainNavigation" class="navbar navbar-expand-lg navbar-dark bg-primary d-none">
         <div class="container-fluid">
             <a class="navbar-brand" href="/dashboard">
                 <i class="bi bi-building"></i> Employee Portal
@@ -43,7 +43,7 @@
                     <!-- Role-specific navigation -->
                     <li class="nav-item d-none" id="hrNav">
                         <a class="nav-link" href="#" id="pendingLeavesTab">
-                            <i class="bi bi-check-circle"></i> Pending Leaves
+                            <i class="bi bi-check-circle"></i> Leave Management
                         </a>
                     </li>
                     <li class="nav-item d-none" id="itAdminNav">
@@ -77,8 +77,18 @@
         </div>
     </nav>
 
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+        <div class="text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Loading Employee Portal...</p>
+        </div>
+    </div>
+
     <!-- Main Content -->
-    <div class="container-fluid mt-4">
+    <div id="mainContent" class="container-fluid mt-4 d-none">
         <div class="row">
             <div class="col-12">
                 <!-- Alert Container -->
@@ -319,13 +329,29 @@
 
                 <!-- Pending Leaves Content (HR Only) -->
                 <div id="pendingLeavesContent" class="d-none">
-                    <h2>Pending Leave Requests</h2>
+                    <h2>Leave Requests Management</h2>
                     <div class="card">
-                        <div class="card-header">
-                            <h5>Requests Awaiting Approval</h5>
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5>All Employee Leave Requests</h5>
+                            <div class="d-flex gap-2">
+                                <select class="form-select form-select-sm" id="hrStatusFilter" onchange="dashboardApp.filterHRLeaves()" style="width: auto;">
+                                    <option value="">All Status</option>
+                                    <option value="PENDING">Pending</option>
+                                    <option value="APPROVED">Approved</option>
+                                    <option value="REJECTED">Rejected</option>
+                                </select>
+                                <select class="form-select form-select-sm" id="hrDepartmentFilter" onchange="dashboardApp.filterHRLeaves()" style="width: auto;">
+                                    <option value="">All Departments</option>
+                                    <option value="Engineering">Engineering</option>
+                                    <option value="Human Resources">Human Resources</option>
+                                    <option value="Finance">Finance</option>
+                                    <option value="Marketing">Marketing</option>
+                                    <option value="Information Technology">Information Technology</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="card-body" id="pendingLeavesList">
-                            <p>Loading pending requests...</p>
+                            <p>Loading leave requests...</p>
                         </div>
                     </div>
                 </div>
@@ -686,6 +712,12 @@
                 try {
                     await this.loadUserProfile();
                     this.setupEventListeners();
+                    
+                    // Hide loading screen and show main content
+                    document.getElementById('loadingScreen').classList.add('d-none');
+                    document.getElementById('mainNavigation').classList.remove('d-none');
+                    document.getElementById('mainContent').classList.remove('d-none');
+                    
                     this.showDashboard();
                 } catch (error) {
                     console.error('Failed to initialize dashboard:', error);
@@ -885,8 +917,8 @@
                     },
                     {
                         icon: 'bi-calendar-check',
-                        title: 'Leave Requests',
-                        description: 'Manage your leave requests',
+                        title: 'My Leave Requests',
+                        description: 'View and submit your personal leave requests',
                         color: 'success',
                         action: 'showLeaves()'
                     },
@@ -904,8 +936,8 @@
                     case 'HR':
                         actions.push({
                             icon: 'bi-check-circle',
-                            title: 'Approve Leaves',
-                            description: 'Review and approve leave requests',
+                            title: 'Manage Leaves',
+                            description: 'Review and manage all leave requests',
                             color: 'warning',
                             action: 'showPendingLeaves()'
                         });
@@ -964,11 +996,8 @@
 
             async showLeaves() {
                 this.showContent('leavesContent');
-                if (this.currentUser.role === 'HR') {
-                    await this.loadAllLeaves();
-                } else {
-                    await this.loadMyLeaves();
-                }
+                // ALWAYS show only the logged-in user's own leaves, regardless of role
+                await this.loadMyLeaves();
             }
 
             async showPayroll() {
@@ -1001,7 +1030,7 @@
                     return;
                 }
                 this.showContent('pendingLeavesContent');
-                await this.loadPendingLeaves();
+                await this.loadAllLeavesForHR();
             }
 
             async showAnnouncementManagement() {
@@ -1033,13 +1062,14 @@
 
             async loadMyLeaves() {
                 try {
+                    // This endpoint returns ONLY the logged-in user's own leave requests
                     const response = await window.employeePortalApp.apiCall('/leaves/my-requests');
                     if (response && response.ok) {
                         const leaves = await response.json();
                         this.updateLeavesView(leaves);
                     }
                 } catch (error) {
-                    console.error('Failed to load leaves:', error);
+                    console.error('Failed to load my leaves:', error);
                     document.getElementById('leavesList').innerHTML = '<p class="text-danger">Failed to load leave requests</p>';
                 }
             }
@@ -1052,38 +1082,19 @@
                     return;
                 }
 
-                const isHR = this.currentUser.role === 'HR';
-                
+                // This displays ONLY the logged-in user's own leaves - no approval buttons, no other users' data
                 const leavesHtml = leaves.map(leave => `
                     <div class="card mb-3">
                         <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div class="flex-grow-1">
-                                    <h6 class="card-title">
-                                        ${leave.leaveType} Leave
-                                        ${isHR && leave.userName ? ` - ${leave.userName}` : ''}
-                                    </h6>
-                                    <p class="card-text">
-                                        <strong>Dates:</strong> ${leave.startDate} to ${leave.endDate} (${leave.durationInDays} days)<br>
-                                        ${isHR && leave.userEmail ? `<strong>Employee:</strong> ${leave.userEmail}<br>` : ''}
-                                        ${isHR && leave.userDepartment ? `<strong>Department:</strong> ${leave.userDepartment}<br>` : ''}
-                                        <strong>Status:</strong> <span class="badge bg-${this.getStatusColor(leave.status)}">${leave.status}</span><br>
-                                        <strong>Reason:</strong> ${leave.reason}
-                                        ${leave.managerComments ? `<br><strong>Manager Comments:</strong> ${leave.managerComments}` : ''}
-                                        ${leave.approvedByName ? `<br><strong>Approved/Rejected by:</strong> ${leave.approvedByName}` : ''}
-                                    </p>
-                                </div>
-                                ${isHR && leave.status === 'PENDING' ? `
-                                    <div class="btn-group-vertical ms-2">
-                                        <button class="btn btn-success btn-sm" onclick="dashboardApp.approveLeave(${leave.id})">
-                                            <i class="bi bi-check-circle"></i> Approve
-                                        </button>
-                                        <button class="btn btn-danger btn-sm mt-1" onclick="dashboardApp.rejectLeave(${leave.id})">
-                                            <i class="bi bi-x-circle"></i> Reject
-                                        </button>
-                                    </div>
-                                ` : ''}
-                            </div>
+                            <h6 class="card-title">${leave.leaveType} Leave</h6>
+                            <p class="card-text">
+                                <strong>Dates:</strong> ${leave.startDate} to ${leave.endDate} (${leave.durationInDays} days)<br>
+                                <strong>Status:</strong> <span class="badge bg-${this.getStatusColor(leave.status)}">${leave.status}</span><br>
+                                <strong>Reason:</strong> ${leave.reason}
+                                ${leave.managerComments ? `<br><strong>Manager Comments:</strong> ${leave.managerComments}` : ''}
+                                ${leave.approvedByName ? `<br><strong>Approved/Rejected by:</strong> ${leave.approvedByName}` : ''}
+                                <br><small class="text-muted">Submitted: ${new Date(leave.createdAt).toLocaleDateString()}</small>
+                            </p>
                         </div>
                     </div>
                 `).join('');
@@ -1128,31 +1139,13 @@
                 }
             }
 
-            async loadAllLeaves() {
-                try {
-                    const response = await window.employeePortalApp.apiCall('/leaves/all');
-                    if (response && response.ok) {
-                        const leaves = await response.json();
-                        this.allLeaves = leaves; // Store for filtering
-                        this.updateLeavesView(leaves);
-                    }
-                } catch (error) {
-                    console.error('Failed to load all leaves:', error);
-                    document.getElementById('leavesList').innerHTML = '<p class="text-danger">Failed to load leave requests</p>';
-                }
-            }
+
 
             updateLeavesView(leaves) {
-                // Update title and show filters for HR
-                if (this.currentUser.role === 'HR') {
-                    document.getElementById('leavesListTitle').textContent = 'All Leave Requests';
-                    document.getElementById('leaveFilters').classList.remove('d-none');
-                    document.getElementById('leavesListColumn').className = 'col-md-8';
-                } else {
-                    document.getElementById('leavesListTitle').textContent = 'My Leave Requests';
-                    document.getElementById('leaveFilters').classList.add('d-none');
-                    document.getElementById('leavesListColumn').className = 'col-md-6';
-                }
+                // ALWAYS show "My Leave Requests" - this page is for personal leaves only
+                document.getElementById('leavesListTitle').textContent = 'My Leave Requests';
+                document.getElementById('leaveFilters').classList.add('d-none');
+                document.getElementById('leavesListColumn').className = 'col-md-8';
                 
                 this.displayLeaves(leaves);
             }
@@ -1182,7 +1175,12 @@
 
                     if (response && response.ok) {
                         window.employeePortalApp.showAlert('Leave request approved successfully!', 'success');
-                        await this.loadAllLeaves(); // Refresh the list
+                        // Refresh the appropriate view based on current page
+                        if (document.getElementById('pendingLeavesContent').classList.contains('d-none')) {
+                            await this.loadMyLeaves(); // If on leaves page
+                        } else {
+                            await this.loadAllLeavesForHR(); // If on HR management page
+                        }
                     } else {
                         const error = await response.json();
                         window.employeePortalApp.showAlert('Failed to approve leave: ' + error.message, 'danger');
@@ -1208,7 +1206,12 @@
 
                     if (response && response.ok) {
                         window.employeePortalApp.showAlert('Leave request rejected successfully!', 'success');
-                        await this.loadAllLeaves(); // Refresh the list
+                        // Refresh the appropriate view based on current page
+                        if (document.getElementById('pendingLeavesContent').classList.contains('d-none')) {
+                            await this.loadMyLeaves(); // If on leaves page
+                        } else {
+                            await this.loadAllLeavesForHR(); // If on HR management page
+                        }
                     } else {
                         const error = await response.json();
                         window.employeePortalApp.showAlert('Failed to reject leave: ' + error.message, 'danger');
@@ -1219,22 +1222,41 @@
                 }
             }
 
-            async loadPendingLeaves() {
+            async loadAllLeavesForHR() {
                 try {
-                    const response = await window.employeePortalApp.apiCall('/leaves/pending');
+                    const response = await window.employeePortalApp.apiCall('/leaves/all');
                     if (response && response.ok) {
                         const leaves = await response.json();
-                        this.displayPendingLeaves(leaves);
+                        this.allHRLeaves = leaves; // Store for filtering
+                        this.displayHRLeaves(leaves);
                     }
                 } catch (error) {
-                    console.error('Failed to load pending leaves:', error);
-                    document.getElementById('pendingLeavesList').innerHTML = '<p class="text-danger">Failed to load pending requests</p>';
+                    console.error('Failed to load all leaves for HR:', error);
+                    document.getElementById('pendingLeavesList').innerHTML = '<p class="text-danger">Failed to load leave requests</p>';
                 }
             }
 
-            displayPendingLeaves(leaves) {
+            filterHRLeaves() {
+                if (!this.allHRLeaves) return;
+                
+                const statusFilter = document.getElementById('hrStatusFilter').value;
+                const departmentFilter = document.getElementById('hrDepartmentFilter').value;
+                let filteredLeaves = this.allHRLeaves;
+                
+                if (statusFilter) {
+                    filteredLeaves = filteredLeaves.filter(leave => leave.status === statusFilter);
+                }
+                
+                if (departmentFilter) {
+                    filteredLeaves = filteredLeaves.filter(leave => leave.userDepartment === departmentFilter);
+                }
+                
+                this.displayHRLeaves(filteredLeaves);
+            }
+
+            displayHRLeaves(leaves) {
                 if (leaves.length === 0) {
-                    document.getElementById('pendingLeavesList').innerHTML = '<p>No pending leave requests found</p>';
+                    document.getElementById('pendingLeavesList').innerHTML = '<p>No leave requests found</p>';
                     return;
                 }
 
@@ -1243,23 +1265,30 @@
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-start">
                                 <div class="flex-grow-1">
-                                    <h6 class="card-title">${leave.leaveType} Leave - ${leave.userName || 'Unknown User'}</h6>
+                                    <h6 class="card-title">
+                                        ${leave.leaveType} Leave - ${leave.userName || 'Unknown User'}
+                                        <span class="badge bg-${this.getStatusColor(leave.status)} ms-2">${leave.status}</span>
+                                    </h6>
                                     <p class="card-text">
                                         <strong>Employee:</strong> ${leave.userEmail || 'N/A'}<br>
                                         <strong>Department:</strong> ${leave.userDepartment || 'N/A'}<br>
                                         <strong>Dates:</strong> ${leave.startDate} to ${leave.endDate} (${leave.durationInDays} days)<br>
                                         <strong>Reason:</strong> ${leave.reason}<br>
                                         <strong>Submitted:</strong> ${new Date(leave.createdAt).toLocaleDateString()}
+                                        ${leave.managerComments ? `<br><strong>Manager Comments:</strong> ${leave.managerComments}` : ''}
+                                        ${leave.approvedByName ? `<br><strong>Processed by:</strong> ${leave.approvedByName}` : ''}
                                     </p>
                                 </div>
-                                <div class="btn-group-vertical ms-2">
-                                    <button class="btn btn-success btn-sm" onclick="dashboardApp.approveLeave(${leave.id})">
-                                        <i class="bi bi-check-circle"></i> Approve
-                                    </button>
-                                    <button class="btn btn-danger btn-sm mt-1" onclick="dashboardApp.rejectLeave(${leave.id})">
-                                        <i class="bi bi-x-circle"></i> Reject
-                                    </button>
-                                </div>
+                                ${leave.status === 'PENDING' ? `
+                                    <div class="btn-group-vertical ms-2">
+                                        <button class="btn btn-success btn-sm" onclick="dashboardApp.approveLeave(${leave.id})">
+                                            <i class="bi bi-check-circle"></i> Approve
+                                        </button>
+                                        <button class="btn btn-danger btn-sm mt-1" onclick="dashboardApp.rejectLeave(${leave.id})">
+                                            <i class="bi bi-x-circle"></i> Reject
+                                        </button>
+                                    </div>
+                                ` : ''}
                             </div>
                         </div>
                     </div>
