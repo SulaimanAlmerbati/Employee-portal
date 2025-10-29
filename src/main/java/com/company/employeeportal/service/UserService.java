@@ -653,6 +653,31 @@ public class UserService {
     }
 
     /**
+     * Get users with advanced filtering (admin only).
+     * 
+     * @param pageable pagination information
+     * @param search search term for name or email
+     * @param role filter by role
+     * @param department filter by department
+     * @param active filter by active status
+     * @param currentUser the current authenticated user
+     * @return page of user responses
+     * @throws UnauthorizedAccessException if not admin
+     */
+    @Transactional(readOnly = true)
+    public Page<UserResponse> getUsersWithFilters(Pageable pageable, String search, Role role, 
+                                                  String department, Boolean active, User currentUser) {
+        if (!currentUser.isItAdmin() && !currentUser.isHR()) {
+            throw new UnauthorizedAccessException("Only administrators and HR can view users");
+        }
+
+        Page<User> users = userRepository.findUsersWithFilters(
+            search, role, department, active != null ? active : true, pageable);
+        
+        return users.map(this::convertToUserResponse);
+    }
+
+    /**
      * Validate user input data.
      * 
      * @param user the user to validate

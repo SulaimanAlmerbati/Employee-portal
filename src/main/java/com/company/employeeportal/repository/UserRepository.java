@@ -110,4 +110,21 @@ public interface UserRepository extends JpaRepository<User, Long> {
      * Find users by department with pagination.
      */
     Page<User> findByDepartmentAndActiveTrue(String department, Pageable pageable);
+
+    /**
+     * Find users with advanced filtering.
+     * Supports filtering by search term (name/email), role, department, and active status.
+     */
+    @Query("SELECT u FROM User u WHERE " +
+           "(:search IS NULL OR :search = '' OR " +
+           " LOWER(u.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
+           " LOWER(u.email) LIKE LOWER(CONCAT('%', :search, '%'))) AND " +
+           "(:role IS NULL OR u.role = :role) AND " +
+           "(:department IS NULL OR :department = '' OR u.department = :department) AND " +
+           "(:active IS NULL OR u.active = :active)")
+    Page<User> findUsersWithFilters(@Param("search") String search,
+                                    @Param("role") Role role,
+                                    @Param("department") String department,
+                                    @Param("active") Boolean active,
+                                    Pageable pageable);
 }

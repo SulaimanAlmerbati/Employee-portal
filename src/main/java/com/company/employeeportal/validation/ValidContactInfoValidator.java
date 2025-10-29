@@ -26,35 +26,31 @@ public class ValidContactInfoValidator implements ConstraintValidator<ValidConta
 
         String trimmedContact = contactInfo.trim();
 
-        // Check for common contact info patterns
-        // Phone number patterns (various formats)
-        String phonePattern = "^[\\+]?[\\d\\s\\-\\(\\)\\.]{7,20}$";
+        // New pattern for country code + numbers only (e.g., +15551234567)
+        String phoneWithCountryCodePattern = "^\\+\\d{1,4}\\d{7,15}$";
+        
+        // Legacy phone number patterns (for backward compatibility)
+        String legacyPhonePattern = "^[\\+]?[\\d\\s\\-\\(\\)\\.]{7,20}$";
         
         // Email pattern (basic)
         String emailPattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
-        
-        // Mixed contact info (phone and email separated by comma or semicolon)
-        String mixedPattern = "^[\\w\\s\\+\\-\\(\\)\\.@,;]+$";
 
-        // Check if it matches any valid pattern
-        if (trimmedContact.matches(phonePattern) || 
-            trimmedContact.matches(emailPattern) ||
-            trimmedContact.matches(mixedPattern)) {
-            
-            // Additional validation for mixed format
-            if (trimmedContact.contains("@") && trimmedContact.contains(",")) {
-                // Split by comma and validate each part
-                String[] parts = trimmedContact.split("[,;]");
-                for (String part : parts) {
-                    String trimmedPart = part.trim();
-                    if (!trimmedPart.matches(phonePattern) && !trimmedPart.matches(emailPattern)) {
-                        return false;
-                    }
-                }
-            }
-            
+        // Check if it matches the new preferred format first
+        if (trimmedContact.matches(phoneWithCountryCodePattern)) {
             return true;
         }
+        
+        // Check legacy formats for backward compatibility
+        if (trimmedContact.matches(legacyPhonePattern) || 
+            trimmedContact.matches(emailPattern)) {
+            return true;
+        }
+
+        // Set custom error message for invalid format
+        context.disableDefaultConstraintViolation();
+        context.buildConstraintViolationWithTemplate(
+            "Contact info must be a valid phone number with country code (e.g., +15551234567) or email address")
+            .addConstraintViolation();
 
         return false;
     }

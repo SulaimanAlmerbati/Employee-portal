@@ -21,6 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.http.HttpMethod;
 
 import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Value;
@@ -104,13 +105,17 @@ public class SecurityConfig {
                 .requestMatchers("/api/announcements/*/update").hasRole("HR")
                 .requestMatchers("/api/announcements/*/delete").hasRole("HR")
                 
-                // IT Admin endpoints - accessible by IT Admin only
-                .requestMatchers("/api/users").hasRole("IT_ADMIN")
-                .requestMatchers("/api/users/create").hasRole("IT_ADMIN")
-                .requestMatchers("/api/users/*/update").hasRole("IT_ADMIN")
-                .requestMatchers("/api/users/*/delete").hasRole("IT_ADMIN")
-                .requestMatchers("/api/users/*/activate").hasRole("IT_ADMIN")
-                .requestMatchers("/api/users/*/deactivate").hasRole("IT_ADMIN")
+                // IT Admin endpoints - accessible by IT Admin and HR
+                .requestMatchers("/api/users").hasAnyRole("IT_ADMIN", "HR")
+                .requestMatchers("/api/users/search").hasAnyRole("IT_ADMIN", "HR")
+                .requestMatchers("/api/users/by-role/*").hasAnyRole("IT_ADMIN", "HR")
+                .requestMatchers("/api/users/test").hasAnyRole("IT_ADMIN", "HR")
+                .requestMatchers(HttpMethod.GET, "/api/users/*").hasAnyRole("IT_ADMIN", "HR")
+                .requestMatchers(HttpMethod.POST, "/api/users").hasRole("IT_ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/api/users/*").hasRole("IT_ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/api/users/*").hasRole("IT_ADMIN")
+                .requestMatchers("/api/users/*/reactivate").hasRole("IT_ADMIN")
+                .requestMatchers("/api/users/*/reset-password").hasRole("IT_ADMIN")
                 
                 // Finance endpoints - accessible by Finance only
                 .requestMatchers("/api/payroll/users/*/payslips").hasRole("FINANCE")

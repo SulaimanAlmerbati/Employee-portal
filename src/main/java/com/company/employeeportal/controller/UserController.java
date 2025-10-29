@@ -46,7 +46,7 @@ public class UserController {
      * @return user profile response
      */
     @GetMapping("/profile")
-    @PreAuthorize("hasRole('EMPLOYEE') or hasRole('MANAGER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('EMPLOYEE') or hasRole('MANAGER') or hasRole('IT_ADMIN')")
     public ResponseEntity<UserProfileResponse> getCurrentUserProfile(
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
         
@@ -62,7 +62,7 @@ public class UserController {
      * @return updated user profile response
      */
     @PutMapping("/profile")
-    @PreAuthorize("hasRole('EMPLOYEE') or hasRole('MANAGER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('EMPLOYEE') or hasRole('MANAGER') or hasRole('IT_ADMIN')")
     public ResponseEntity<UserProfileResponse> updateCurrentUserProfile(
             @Valid @RequestBody UserProfileUpdateRequest updateRequest,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
@@ -81,7 +81,7 @@ public class UserController {
      * @return success response
      */
     @PostMapping("/profile/change-password")
-    @PreAuthorize("hasRole('EMPLOYEE') or hasRole('MANAGER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('EMPLOYEE') or hasRole('MANAGER') or hasRole('IT_ADMIN')")
     public ResponseEntity<String> changePassword(
             @Valid @RequestBody ChangePasswordRequest changePasswordRequest,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
@@ -93,30 +93,57 @@ public class UserController {
     }
 
     /**
-     * Get all users (admin only).
+     * Test endpoint to check if users exist (temporary for debugging)
+     */
+    @GetMapping("/test")
+    public ResponseEntity<String> testUsers() {
+        try {
+            // Simple test to verify the service is working
+            return ResponseEntity.ok("User service is accessible");
+        } catch (Exception e) {
+            return ResponseEntity.ok("Error: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Get all users with advanced filtering (admin only).
      * 
      * @param page page number (default: 0)
      * @param size page size (default: 20)
      * @param sort sort field (default: name)
      * @param direction sort direction (default: asc)
+     * @param search search term for name or email
+     * @param role filter by role
+     * @param department filter by department
+     * @param active filter by active status
      * @param userPrincipal the authenticated user
      * @return page of users
      */
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('IT_ADMIN') or hasRole('HR')")
     public ResponseEntity<Page<UserResponse>> getAllUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @RequestParam(defaultValue = "name") String sort,
             @RequestParam(defaultValue = "asc") String direction,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) Role role,
+            @RequestParam(required = false) String department,
+            @RequestParam(required = false) Boolean active,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        
+        // Validate search parameter length
+        if (search != null && search.length() > 200) {
+            throw new IllegalArgumentException("Search term cannot exceed 200 characters");
+        }
         
         Sort.Direction sortDirection = direction.equalsIgnoreCase("desc") ? 
             Sort.Direction.DESC : Sort.Direction.ASC;
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, sort));
         
         User currentUser = userService.getUserProfile(userPrincipal.getId());
-        Page<UserResponse> response = userService.getUsersWithPaginationResponse(pageable, currentUser);
+        Page<UserResponse> response = userService.getUsersWithFilters(
+            pageable, search, role, department, active, currentUser);
         
         return ResponseEntity.ok(response);
     }
@@ -131,12 +158,17 @@ public class UserController {
      * @return page of matching users
      */
     @GetMapping("/search")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('IT_ADMIN')")
     public ResponseEntity<Page<UserResponse>> searchUsers(
             @RequestParam String searchTerm,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        
+        // Validate search term length
+        if (searchTerm != null && searchTerm.length() > 200) {
+            throw new IllegalArgumentException("Search term cannot exceed 200 characters");
+        }
         
         Pageable pageable = PageRequest.of(page, size, Sort.by("name"));
         User currentUser = userService.getUserProfile(userPrincipal.getId());
@@ -155,7 +187,7 @@ public class UserController {
      * @return list of users with the specified role
      */
     @GetMapping("/by-role/{role}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('IT_ADMIN')")
     public ResponseEntity<List<UserResponse>> getUsersByRole(
             @PathVariable Role role,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
@@ -178,7 +210,7 @@ public class UserController {
      * @return user details
      */
     @GetMapping("/{userId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('IT_ADMIN')")
     public ResponseEntity<UserResponse> getUserById(
             @PathVariable Long userId,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
@@ -197,10 +229,13 @@ public class UserController {
      * @return created user response
      */
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('IT_ADMIN')")
     public ResponseEntity<UserResponse> createUser(
             @Valid @RequestBody UserRequest userRequest,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        
+        // Add logging for debugging
+        System.out.println("Creating user with data: " + userRequest.toString());
         
         User currentUser = userService.getUserProfile(userPrincipal.getId());
         UserResponse response = userService.createUser(userRequest, currentUser);
@@ -217,7 +252,7 @@ public class UserController {
      * @return updated user response
      */
     @PutMapping("/{userId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('IT_ADMIN')")
     public ResponseEntity<UserResponse> updateUser(
             @PathVariable Long userId,
             @Valid @RequestBody UserRequest userRequest,
@@ -240,7 +275,7 @@ public class UserController {
      * @return success response
      */
     @DeleteMapping("/{userId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('IT_ADMIN')")
     public ResponseEntity<String> deactivateUser(
             @PathVariable Long userId,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
@@ -259,7 +294,7 @@ public class UserController {
      * @return success response
      */
     @PostMapping("/{userId}/reactivate")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('IT_ADMIN')")
     public ResponseEntity<String> reactivateUser(
             @PathVariable Long userId,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
@@ -279,7 +314,7 @@ public class UserController {
      * @return success response
      */
     @PostMapping("/{userId}/reset-password")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('IT_ADMIN')")
     public ResponseEntity<String> resetUserPassword(
             @PathVariable Long userId,
             @RequestParam String newPassword,
