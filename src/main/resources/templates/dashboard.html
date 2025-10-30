@@ -1,5 +1,6 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
 </head>
+
 <body>
     <!-- Navigation -->
     <nav id="mainNavigation" class="navbar navbar-expand-lg navbar-dark bg-primary d-none">
@@ -59,17 +61,20 @@
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                            data-bs-toggle="dropdown">
                             <i class="bi bi-person-circle"></i> <span id="userName">User</span>
                         </a>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="#" id="profileLink">
-                                <i class="bi bi-person"></i> Profile
-                            </a></li>
-                            <li><hr class="dropdown-divider"></li>
+                                    <i class="bi bi-person"></i> Profile
+                                </a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
                             <li><a class="dropdown-item" href="#" id="logoutLink">
-                                <i class="bi bi-box-arrow-right"></i> Logout
-                            </a></li>
+                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                </a></li>
                         </ul>
                     </li>
                 </ul>
@@ -93,7 +98,7 @@
             <div class="col-12">
                 <!-- Alert Container -->
                 <div id="alertContainer"></div>
-                
+
                 <!-- Dashboard Content -->
                 <div id="dashboardContent">
                     <div class="row">
@@ -113,7 +118,8 @@
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h5 id="leavesListTitle">My Leave Requests</h5>
                                     <div id="leaveFilters" class="d-none">
-                                        <select class="form-select form-select-sm" id="statusFilter" onchange="dashboardApp.filterLeaves()">
+                                        <select class="form-select form-select-sm" id="statusFilter"
+                                            onchange="dashboardApp.filterLeaves()">
                                             <option value="">All Status</option>
                                             <option value="PENDING">Pending</option>
                                             <option value="APPROVED">Approved</option>
@@ -194,7 +200,7 @@
                 <!-- Users Content (IT Admin Only) -->
                 <div id="usersContent" class="d-none">
                     <h2>User Management</h2>
-                    
+
                     <!-- Action Bar -->
                     <div class="row mb-3">
                         <div class="col-md-6">
@@ -210,7 +216,8 @@
                         </div>
                         <div class="col-md-6">
                             <div class="input-group">
-                                <input type="text" class="form-control" id="userSearchInput" placeholder="Search by name or email..." maxlength="200">
+                                <input type="text" class="form-control" id="userSearchInput"
+                                    placeholder="Search by name or email..." maxlength="200">
                                 <button class="btn btn-outline-secondary" onclick="dashboardApp.searchUsers()">
                                     <i class="bi bi-search"></i>
                                 </button>
@@ -280,7 +287,8 @@
                                     <button class="btn btn-primary" onclick="dashboardApp.applyFilters()">
                                         <i class="bi bi-check2"></i> Apply Filters
                                     </button>
-                                    <button class="btn btn-outline-secondary ms-2" onclick="dashboardApp.resetFilters()">
+                                    <button class="btn btn-outline-secondary ms-2"
+                                        onclick="dashboardApp.resetFilters()">
                                         <i class="bi bi-arrow-counterclockwise"></i> Reset
                                     </button>
                                 </div>
@@ -334,13 +342,15 @@
                         <div class="card-header d-flex justify-content-between align-items-center">
                             <h5>All Employee Leave Requests</h5>
                             <div class="d-flex gap-2">
-                                <select class="form-select form-select-sm" id="hrStatusFilter" onchange="dashboardApp.filterHRLeaves()" style="width: auto;">
+                                <select class="form-select form-select-sm" id="hrStatusFilter"
+                                    onchange="dashboardApp.filterHRLeaves()" style="width: auto;">
                                     <option value="">All Status</option>
                                     <option value="PENDING">Pending</option>
                                     <option value="APPROVED">Approved</option>
                                     <option value="REJECTED">Rejected</option>
                                 </select>
-                                <select class="form-select form-select-sm" id="hrDepartmentFilter" onchange="dashboardApp.filterHRLeaves()" style="width: auto;">
+                                <select class="form-select form-select-sm" id="hrDepartmentFilter"
+                                    onchange="dashboardApp.filterHRLeaves()" style="width: auto;">
                                     <option value="">All Departments</option>
                                     <option value="Engineering">Engineering</option>
                                     <option value="Human Resources">Human Resources</option>
@@ -373,7 +383,8 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="announcementContent" class="form-label">Content</label>
-                                            <textarea class="form-control" id="announcementContent" rows="4" required></textarea>
+                                            <textarea class="form-control" id="announcementContent" rows="4"
+                                                required></textarea>
                                         </div>
                                         <div class="mb-3">
                                             <label for="targetDepartment" class="form-label">Target Department</label>
@@ -440,7 +451,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="editUserFromView" onclick="dashboardApp.editUserFromView()">
+                    <button type="button" class="btn btn-primary" id="editUserFromView"
+                        onclick="dashboardApp.editUserFromView()">
                         <i class="bi bi-pencil"></i> Edit User
                     </button>
                 </div>
@@ -510,33 +522,14 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="editUserContactInfo" class="form-label">Contact Info</label>
+                                    <label for="editUserContactInfo" class="form-label">Contact Info (Bahrain
+                                        Only)</label>
                                     <div class="input-group">
-                                        <select class="form-select" id="editUserCountryCode" style="max-width: 120px;">
-                                            <option value="+1">🇺🇸 +1</option>
-                                            <option value="+44">🇬🇧 +44</option>
-                                            <option value="+33">🇫🇷 +33</option>
-                                            <option value="+49">🇩🇪 +49</option>
-                                            <option value="+39">🇮🇹 +39</option>
-                                            <option value="+34">🇪🇸 +34</option>
-                                            <option value="+31">🇳🇱 +31</option>
-                                            <option value="+32">🇧🇪 +32</option>
-                                            <option value="+41">🇨🇭 +41</option>
-                                            <option value="+43">🇦🇹 +43</option>
-                                            <option value="+45">🇩🇰 +45</option>
-                                            <option value="+46">🇸🇪 +46</option>
-                                            <option value="+47">🇳🇴 +47</option>
-                                            <option value="+358">🇫🇮 +358</option>
-                                            <option value="+91">🇮🇳 +91</option>
-                                            <option value="+86">🇨🇳 +86</option>
-                                            <option value="+81">🇯🇵 +81</option>
-                                            <option value="+82">🇰🇷 +82</option>
-                                            <option value="+61">🇦🇺 +61</option>
-                                            <option value="+64">🇳🇿 +64</option>
-                                        </select>
-                                        <input type="tel" class="form-control" id="editUserContactInfo" placeholder="5551234567" pattern="[0-9]*" inputmode="numeric">
+                                        <span class="input-group-text">🇧🇭 +973</span>
+                                        <input type="tel" class="form-control" id="editUserContactInfo"
+                                            placeholder="33123456" pattern="[0-9]{8}" inputmode="numeric" maxlength="8">
                                     </div>
-                                    <div class="form-text">Enter phone number (numbers only, no spaces or dashes)</div>
+                                    <div class="form-text">Enter 8-digit Bahraini mobile number (e.g., 33123456)</div>
                                 </div>
                             </div>
                         </div>
@@ -559,7 +552,8 @@
                         </div>
                         <div class="alert alert-info">
                             <i class="bi bi-info-circle"></i>
-                            <strong>Note:</strong> Password cannot be changed through this form. Use the password reset feature if needed.
+                            <strong>Note:</strong> Password cannot be changed through this form. Use the password reset
+                            feature if needed.
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -574,7 +568,8 @@
     </div>
 
     <!-- User Create Modal -->
-    <div class="modal fade" id="userCreateModal" tabindex="-1" aria-labelledby="userCreateModalLabel" aria-hidden="true">
+    <div class="modal fade" id="userCreateModal" tabindex="-1" aria-labelledby="userCreateModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -615,7 +610,8 @@
                                 <div class="mb-3">
                                     <label for="createUserPassword" class="form-label">Password *</label>
                                     <input type="password" class="form-control" id="createUserPassword" required>
-                                    <div class="form-text">Must be at least 8 characters with uppercase, lowercase, number, and special character.</div>
+                                    <div class="form-text">Must be at least 8 characters with uppercase, lowercase,
+                                        number, and special character.</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -655,33 +651,14 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="createUserContactInfo" class="form-label">Contact Info</label>
+                                    <label for="createUserContactInfo" class="form-label">Contact Info (Bahrain
+                                        Only)</label>
                                     <div class="input-group">
-                                        <select class="form-select" id="createUserCountryCode" style="max-width: 120px;">
-                                            <option value="+1">🇺🇸 +1</option>
-                                            <option value="+44">🇬🇧 +44</option>
-                                            <option value="+33">🇫🇷 +33</option>
-                                            <option value="+49">🇩🇪 +49</option>
-                                            <option value="+39">🇮🇹 +39</option>
-                                            <option value="+34">🇪🇸 +34</option>
-                                            <option value="+31">🇳🇱 +31</option>
-                                            <option value="+32">🇧🇪 +32</option>
-                                            <option value="+41">🇨🇭 +41</option>
-                                            <option value="+43">🇦🇹 +43</option>
-                                            <option value="+45">🇩🇰 +45</option>
-                                            <option value="+46">🇸🇪 +46</option>
-                                            <option value="+47">🇳🇴 +47</option>
-                                            <option value="+358">🇫🇮 +358</option>
-                                            <option value="+91">🇮🇳 +91</option>
-                                            <option value="+86">🇨🇳 +86</option>
-                                            <option value="+81">🇯🇵 +81</option>
-                                            <option value="+82">🇰🇷 +82</option>
-                                            <option value="+61">🇦🇺 +61</option>
-                                            <option value="+64">🇳🇿 +64</option>
-                                        </select>
-                                        <input type="tel" class="form-control" id="createUserContactInfo" placeholder="5551234567" pattern="[0-9]*" inputmode="numeric">
+                                        <span class="input-group-text">🇧🇭 +973</span>
+                                        <input type="tel" class="form-control" id="createUserContactInfo"
+                                            placeholder="33123456" pattern="[0-9]{8}" inputmode="numeric" maxlength="8">
                                     </div>
-                                    <div class="form-text">Enter phone number (numbers only, no spaces or dashes)</div>
+                                    <div class="form-text">Enter 8-digit Bahraini mobile number (e.g., 33123456)</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -696,6 +673,135 @@
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-plus"></i> Create User
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProfileModalLabel">
+                        <i class="bi bi-person-gear"></i> Edit Profile
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="editProfileForm">
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label for="editProfilePicture" class="form-label">Profile Picture</label>
+                                    <input type="file" class="form-control" id="editProfilePicture" accept="image/*">
+                                    <div class="form-text">Upload a profile picture (JPG, PNG, GIF - Max 5MB)</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="editProfileName" class="form-label">Full Name *</label>
+                                    <input type="text" class="form-control" id="editProfileName" required>
+                                    <div class="form-text profile-restriction d-none">Only IT Admin can change name
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="editProfileEmail" class="form-label">Email *</label>
+                                    <input type="email" class="form-control" id="editProfileEmail" required readonly>
+                                    <div class="form-text">Email cannot be changed</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="editProfileDepartment" class="form-label">Department</label>
+                                    <input type="text" class="form-control" id="editProfileDepartment" readonly>
+                                    <div class="form-text">Contact IT Admin to change department</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="editProfilePosition" class="form-label">Position</label>
+                                    <input type="text" class="form-control" id="editProfilePosition">
+                                    <div class="form-text profile-restriction d-none">Only IT Admin can change position
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="editProfileContactInfo" class="form-label">Contact Info (Bahrain
+                                        Only)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">🇧🇭 +973</span>
+
+                                        <input type="tel" class="form-control" id="editProfileContactInfo"
+                                            placeholder="33123456" pattern="[0-9]{8}" inputmode="numeric" maxlength="8">
+                                    </div>
+                                    <div class="form-text">Enter 8-digit Bahraini mobile number (e.g., 33123456)</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="editProfileJoinDate" class="form-label">Join Date</label>
+                                    <input type="date" class="form-control" id="editProfileJoinDate" readonly>
+                                    <div class="form-text">Join date cannot be changed</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check"></i> Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changePasswordModalLabel">
+                        <i class="bi bi-key"></i> Change Password
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="changePasswordForm">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="currentPassword" class="form-label">Current Password *</label>
+                            <input type="password" class="form-control" id="currentPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">New Password *</label>
+                            <input type="password" class="form-control" id="newPassword" required>
+                            <div class="form-text">Must be at least 8 characters with uppercase, lowercase, number, and
+                                special character.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirm New Password *</label>
+                            <input type="password" class="form-control" id="confirmPassword" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check"></i> Change Password
                         </button>
                     </div>
                 </form>
@@ -723,12 +829,12 @@
                 try {
                     await this.loadUserProfile();
                     this.setupEventListeners();
-                    
+
                     // Hide loading screen and show main content
                     document.getElementById('loadingScreen').classList.add('d-none');
                     document.getElementById('mainNavigation').classList.remove('d-none');
                     document.getElementById('mainContent').classList.remove('d-none');
-                    
+
                     this.showDashboard();
                 } catch (error) {
                     console.error('Failed to initialize dashboard:', error);
@@ -742,7 +848,7 @@
                 if (response && response.ok) {
                     this.currentUser = await response.json();
                     document.getElementById('userName').textContent = this.currentUser.name;
-                    
+
                     // Show role-specific navigation
                     this.updateNavigationForRole(this.currentUser.role);
                 } else {
@@ -797,7 +903,7 @@
                 // User search input - trigger search on Enter key and update character count
                 const searchInput = document.getElementById('userSearchInput');
                 const charCount = document.getElementById('searchCharCount');
-                
+
                 searchInput.addEventListener('keypress', (e) => {
                     if (e.key === 'Enter') {
                         e.preventDefault();
@@ -810,7 +916,7 @@
                     const currentLength = e.target.value.length;
                     const maxLength = 200;
                     charCount.textContent = `${currentLength}/${maxLength} characters`;
-                    
+
                     // Change color when approaching limit
                     if (currentLength > 180) {
                         charCount.className = 'text-danger';
@@ -830,6 +936,15 @@
                     this.createUser(e);
                 });
 
+                // Profile management form event listeners
+                document.getElementById('editProfileForm').addEventListener('submit', (e) => {
+                    this.updateProfile(e);
+                });
+
+                document.getElementById('changePasswordForm').addEventListener('submit', (e) => {
+                    this.changePassword(e);
+                });
+
                 // Phone number input validation - only allow numbers
                 const phoneInputs = ['createUserContactInfo', 'editUserContactInfo'];
                 phoneInputs.forEach(inputId => {
@@ -838,7 +953,7 @@
                         // Remove any non-numeric characters
                         e.target.value = e.target.value.replace(/[^0-9]/g, '');
                     });
-                    
+
                     input.addEventListener('keypress', (e) => {
                         // Only allow numeric keys, backspace, delete, tab, escape, enter
                         const allowedKeys = ['Backspace', 'Delete', 'Tab', 'Escape', 'Enter'];
@@ -858,7 +973,7 @@
                 document.getElementById('financeNav').classList.add('d-none');
 
                 // Show navigation based on role
-                switch(role) {
+                switch (role) {
                     case 'HR':
                         document.getElementById('hrNav').classList.remove('d-none');
                         break;
@@ -874,8 +989,8 @@
             showContent(contentId) {
                 // Hide all content sections
                 const contents = [
-                    'dashboardContent', 'leavesContent', 'payrollContent', 'announcementsContent', 
-                    'usersContent', 'profileContent', 'pendingLeavesContent', 
+                    'dashboardContent', 'leavesContent', 'payrollContent', 'announcementsContent',
+                    'usersContent', 'profileContent', 'pendingLeavesContent',
                     'announcementManagementContent', 'payrollManagementContent'
                 ];
                 contents.forEach(id => {
@@ -898,9 +1013,9 @@
 
             async showDashboard() {
                 this.showContent('dashboardContent');
-                
+
                 let quickActions = this.getQuickActionsForRole(this.currentUser.role);
-                
+
                 const dashboardHtml = `
                     <div class="row">
                         <div class="col-12">
@@ -912,7 +1027,7 @@
                         ${quickActions}
                     </div>
                 `;
-                
+
                 document.getElementById('dashboardContent').innerHTML = dashboardHtml;
             }
 
@@ -943,7 +1058,7 @@
                 ];
 
                 // Role-specific actions
-                switch(role) {
+                switch (role) {
                     case 'HR':
                         actions.push({
                             icon: 'bi-check-circle',
@@ -960,7 +1075,7 @@
                             action: 'showAnnouncementManagement()'
                         });
                         break;
-                    
+
                     case 'IT_ADMIN':
                         actions.push({
                             icon: 'bi-people',
@@ -970,7 +1085,7 @@
                             action: 'showUserManagement()'
                         });
                         break;
-                    
+
                     case 'FINANCE':
                         actions.push({
                             icon: 'bi-cash-coin',
@@ -1035,6 +1150,355 @@
                 await this.loadProfile();
             }
 
+            async loadProfile() {
+                try {
+                    const response = await window.employeePortalApp.apiCall('/users/profile');
+                    if (response && response.ok) {
+                        const user = await response.json();
+                        this.renderProfile(user);
+                    } else {
+                        document.getElementById('profileDetails').innerHTML =
+                            '<div class="alert alert-danger">Failed to load profile information.</div>';
+                    }
+                } catch (error) {
+                    console.error('Error loading profile:', error);
+                    document.getElementById('profileDetails').innerHTML =
+                        '<div class="alert alert-danger">Error loading profile information.</div>';
+                }
+            }
+
+            renderProfile(user) {
+                const profileHtml = `
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="row mb-3">
+                                <div class="col-sm-3"><strong>Name:</strong></div>
+                                <div class="col-sm-9">${user.name || 'Not specified'}</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-3"><strong>Email:</strong></div>
+                                <div class="col-sm-9">${user.email || 'Not specified'}</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-3"><strong>Role:</strong></div>
+                                <div class="col-sm-9">
+                                    <span class="badge bg-primary">${this.formatRole(user.role)}</span>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-3"><strong>Department:</strong></div>
+                                <div class="col-sm-9">${user.department || 'Not assigned'}</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-3"><strong>Position:</strong></div>
+                                <div class="col-sm-9">${user.position || 'Not specified'}</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-3"><strong>Contact Info:</strong></div>
+                                <div class="col-sm-9">${user.contactInfo || 'Not provided'}</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-3"><strong>Join Date:</strong></div>
+                                <div class="col-sm-9">${user.joinDate ? new Date(user.joinDate).toLocaleDateString() : 'Not specified'}</div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-sm-3"><strong>Status:</strong></div>
+                                <div class="col-sm-9">
+                                    <span class="badge ${user.active ? 'bg-success' : 'bg-danger'}">
+                                        ${user.active ? 'Active' : 'Inactive'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center">
+                                ${user.profilePicture ?
+                        `<img src="/api/files/profile-pictures/${user.profilePicture}" 
+                                          alt="Profile Picture" 
+                                          class="rounded-circle" 
+                                          style="width: 120px; height: 120px; object-fit: cover; border: 3px solid #dee2e6;"
+                                          onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+                                     <div class="bg-light rounded-circle align-items-center justify-content-center" 
+                                          style="width: 120px; height: 120px; font-size: 48px; color: #6c757d; display: none;">
+                                         <i class="bi bi-person-circle"></i>
+                                     </div>` :
+                        `<div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                          style="width: 120px; height: 120px; font-size: 48px; color: #6c757d;">
+                                         <i class="bi bi-person-circle"></i>
+                                     </div>`
+                    }
+                                <h5 class="mt-3">${user.name}</h5>
+                                <p class="text-muted">${this.formatRole(user.role)}</p>
+                                <button class="btn btn-primary btn-sm" onclick="dashboardApp.showEditProfileModal()">
+                                    <i class="bi bi-pencil"></i> Edit Profile
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm ms-2" onclick="dashboardApp.showChangePasswordModal()">
+                                    <i class="bi bi-key"></i> Change Password
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('profileDetails').innerHTML = profileHtml;
+            }
+
+            formatRole(role) {
+                const roleMap = {
+                    'EMPLOYEE': 'Employee',
+                    'HR': 'Human Resources',
+                    'IT_ADMIN': 'IT Administrator',
+                    'FINANCE': 'Finance'
+                };
+                return roleMap[role] || role;
+            }
+
+            async showEditProfileModal() {
+                try {
+                    const response = await window.employeePortalApp.apiCall('/users/profile');
+                    if (response && response.ok) {
+                        const user = await response.json();
+
+                        // Populate form fields
+                        document.getElementById('editProfileName').value = user.name || '';
+                        document.getElementById('editProfileEmail').value = user.email || '';
+                        document.getElementById('editProfileDepartment').value = user.department || '';
+                        document.getElementById('editProfilePosition').value = user.position || '';
+                        document.getElementById('editProfileJoinDate').value = user.joinDate || '';
+
+                        // Handle contact info (extract Bahraini phone number)
+                        if (user.contactInfo) {
+                            const contactMatch = user.contactInfo.match(/^\+973(.*)$/);
+                            if (contactMatch) {
+                                document.getElementById('editProfileContactInfo').value = contactMatch[1];
+                            } else {
+                                // If it's not a Bahraini number, clear the field
+                                document.getElementById('editProfileContactInfo').value = '';
+                            }
+                        }
+
+                        // Apply role-based restrictions
+                        this.applyProfileEditRestrictions();
+
+                        const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
+                        modal.show();
+                    }
+                } catch (error) {
+                    console.error('Error loading profile for edit:', error);
+                    window.employeePortalApp.showAlert('Error loading profile information', 'danger');
+                }
+            }
+
+            applyProfileEditRestrictions() {
+                const isITAdmin = this.currentUser.role === 'IT_ADMIN';
+
+                // Fields that only IT Admin can edit
+                const restrictedFields = [
+                    'editProfileName',
+                    'editProfilePosition'
+                ];
+
+                restrictedFields.forEach(fieldId => {
+                    const field = document.getElementById(fieldId);
+                    const restrictionText = field.parentElement.querySelector('.profile-restriction');
+
+                    if (!isITAdmin) {
+                        // Make field readonly for non-IT Admin users
+                        field.setAttribute('readonly', true);
+                        field.classList.add('bg-light');
+                        if (restrictionText) {
+                            restrictionText.classList.remove('d-none');
+                        }
+                    } else {
+                        // Allow IT Admin to edit all fields
+                        field.removeAttribute('readonly');
+                        field.classList.remove('bg-light');
+                        if (restrictionText) {
+                            restrictionText.classList.add('d-none');
+                        }
+                    }
+                });
+
+                // Profile picture and contact info are always editable by all users
+                // Department, email, and join date are always readonly for everyone
+            }
+
+            showChangePasswordModal() {
+                // Reset form
+                document.getElementById('changePasswordForm').reset();
+
+                const modal = new bootstrap.Modal(document.getElementById('changePasswordModal'));
+                modal.show();
+            }
+
+            async updateProfile(event) {
+                event.preventDefault();
+
+                try {
+                    // Combine Bahraini country code and phone number
+                    const phoneNumber = document.getElementById('editProfileContactInfo').value.trim();
+                    // Validate Bahraini phone number format (8 digits)
+                    if (phoneNumber && !/^\d{8}$/.test(phoneNumber)) {
+                        window.employeePortalApp.showAlert('Please enter a valid 8-digit Bahraini phone number', 'danger');
+                        return;
+                    }
+                    const fullContactInfo = phoneNumber ? `+973${phoneNumber}` : null;
+
+                    // Check if user is IT Admin to determine which fields to update
+                    const isITAdmin = this.currentUser.role === 'IT_ADMIN';
+
+                    const formData = {
+                        email: document.getElementById('editProfileEmail').value.trim(),
+                        contactInfo: fullContactInfo
+                    };
+
+                    // Only include name and position if user is IT Admin
+                    if (isITAdmin) {
+                        formData.name = document.getElementById('editProfileName').value.trim();
+                        formData.position = document.getElementById('editProfilePosition').value.trim() || null;
+                    }
+
+                    // Handle profile picture upload if a file is selected
+                    const profilePictureFile = document.getElementById('editProfilePicture').files[0];
+                    let profilePictureUploaded = false;
+
+                    if (profilePictureFile) {
+                        // Validate file size (5MB max)
+                        if (profilePictureFile.size > 5 * 1024 * 1024) {
+                            window.employeePortalApp.showAlert('Profile picture must be less than 5MB', 'danger');
+                            return;
+                        }
+
+                        // Validate file type
+                        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                        if (!allowedTypes.includes(profilePictureFile.type)) {
+                            window.employeePortalApp.showAlert('Only JPEG, PNG, and GIF images are allowed', 'danger');
+                            return;
+                        }
+
+                        // Upload profile picture
+                        try {
+                            const pictureFormData = new FormData();
+                            pictureFormData.append('file', profilePictureFile);
+
+                            const pictureResponse = await window.employeePortalApp.apiCall('/users/profile/picture', {
+                                method: 'POST',
+                                body: pictureFormData,
+                                headers: {} // Let browser set Content-Type for FormData
+                            });
+
+                            if (pictureResponse && pictureResponse.ok) {
+                                profilePictureUploaded = true;
+                                window.employeePortalApp.showAlert('Profile picture uploaded successfully!', 'success');
+                            } else {
+                                const errorText = await pictureResponse.text();
+                                window.employeePortalApp.showAlert('Failed to upload profile picture: ' + errorText, 'danger');
+                                return;
+                            }
+                        } catch (error) {
+                            console.error('Error uploading profile picture:', error);
+                            window.employeePortalApp.showAlert('Error uploading profile picture', 'danger');
+                            return;
+                        }
+                    }
+
+                    const response = await window.employeePortalApp.apiCall('/users/profile', {
+                        method: 'PUT',
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (response && response.ok) {
+                        const isITAdmin = this.currentUser.role === 'IT_ADMIN';
+                        let message = isITAdmin ? 'Profile updated successfully!' : 'Contact information updated successfully!';
+
+                        // Update message if profile picture was also uploaded
+                        if (profilePictureUploaded) {
+                            message = isITAdmin ? 'Profile and picture updated successfully!' : 'Contact information and picture updated successfully!';
+                        }
+
+                        window.employeePortalApp.showAlert(message, 'success');
+
+                        // Close modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('editProfileModal'));
+                        modal.hide();
+
+                        // Reload profile
+                        await this.loadProfile();
+
+                        // Update current user info
+                        await this.loadUserProfile();
+                    } else {
+                        const errorData = await response.json();
+                        let errorMessage = 'Failed to update profile';
+
+                        if (errorData.validationErrors) {
+                            const errors = Object.values(errorData.validationErrors).join(', ');
+                            errorMessage = `Validation errors: ${errors}`;
+                        } else if (errorData.message) {
+                            errorMessage = errorData.message;
+                        }
+
+                        window.employeePortalApp.showAlert(errorMessage, 'danger');
+                    }
+                } catch (error) {
+                    console.error('Error updating profile:', error);
+                    window.employeePortalApp.showAlert('Error updating profile', 'danger');
+                }
+            }
+
+            async changePassword(event) {
+                event.preventDefault();
+
+                const currentPassword = document.getElementById('currentPassword').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                // Validate passwords match
+                if (newPassword !== confirmPassword) {
+                    window.employeePortalApp.showAlert('New passwords do not match', 'danger');
+                    return;
+                }
+
+                try {
+                    const formData = {
+                        currentPassword: currentPassword,
+                        newPassword: newPassword,
+                        confirmPassword: confirmPassword
+                    };
+
+                    const response = await window.employeePortalApp.apiCall('/users/change-password', {
+                        method: 'POST',
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (response && response.ok) {
+                        window.employeePortalApp.showAlert('Password changed successfully!', 'success');
+
+                        // Close modal
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('changePasswordModal'));
+                        modal.hide();
+
+                        // Reset form
+                        document.getElementById('changePasswordForm').reset();
+                    } else {
+                        const errorData = await response.json();
+                        let errorMessage = 'Failed to change password';
+
+                        if (errorData.validationErrors) {
+                            const errors = Object.values(errorData.validationErrors).join(', ');
+                            errorMessage = `Validation errors: ${errors}`;
+                        } else if (errorData.message) {
+                            errorMessage = errorData.message;
+                        }
+
+                        window.employeePortalApp.showAlert(errorMessage, 'danger');
+                    }
+                } catch (error) {
+                    console.error('Error changing password:', error);
+                    window.employeePortalApp.showAlert('Error changing password', 'danger');
+                }
+            }
+
             async showPendingLeaves() {
                 if (this.currentUser.role !== 'HR') {
                     window.employeePortalApp.showAlert('Access denied. HR role required.', 'danger');
@@ -1087,7 +1551,7 @@
 
             displayLeaves(leaves) {
                 const targetElement = document.getElementById('leavesList');
-                
+
                 if (leaves.length === 0) {
                     targetElement.innerHTML = '<p>No leave requests found</p>';
                     return;
@@ -1157,27 +1621,27 @@
                 document.getElementById('leavesListTitle').textContent = 'My Leave Requests';
                 document.getElementById('leaveFilters').classList.add('d-none');
                 document.getElementById('leavesListColumn').className = 'col-md-8';
-                
+
                 this.displayLeaves(leaves);
             }
 
             filterLeaves() {
                 if (!this.allLeaves) return;
-                
+
                 const statusFilter = document.getElementById('statusFilter').value;
                 let filteredLeaves = this.allLeaves;
-                
+
                 if (statusFilter) {
                     filteredLeaves = this.allLeaves.filter(leave => leave.status === statusFilter);
                 }
-                
+
                 this.displayLeaves(filteredLeaves);
             }
 
             async approveLeave(leaveId) {
                 const comments = prompt('Enter approval comments (optional):');
                 if (comments === null) return; // User cancelled
-                
+
                 try {
                     const response = await window.employeePortalApp.apiCall(`/leaves/${leaveId}/approve`, {
                         method: 'PUT',
@@ -1208,7 +1672,7 @@
                     window.employeePortalApp.showAlert('Rejection reason is required', 'warning');
                     return;
                 }
-                
+
                 try {
                     const response = await window.employeePortalApp.apiCall(`/leaves/${leaveId}/reject`, {
                         method: 'PUT',
@@ -1249,19 +1713,19 @@
 
             filterHRLeaves() {
                 if (!this.allHRLeaves) return;
-                
+
                 const statusFilter = document.getElementById('hrStatusFilter').value;
                 const departmentFilter = document.getElementById('hrDepartmentFilter').value;
                 let filteredLeaves = this.allHRLeaves;
-                
+
                 if (statusFilter) {
                     filteredLeaves = filteredLeaves.filter(leave => leave.status === statusFilter);
                 }
-                
+
                 if (departmentFilter) {
                     filteredLeaves = filteredLeaves.filter(leave => leave.userDepartment === departmentFilter);
                 }
-                
+
                 this.displayHRLeaves(filteredLeaves);
             }
 
@@ -1407,7 +1871,7 @@
                     params.append('size', this.userFilters.size);
                     params.append('sort', this.userFilters.sort);
                     params.append('direction', this.userFilters.direction);
-                    
+
                     if (this.userFilters.search) {
                         params.append('search', this.userFilters.search);
                     }
@@ -1455,13 +1919,13 @@
 
             displayUsers(data) {
                 const users = data.content || data;
-                
+
                 if (!Array.isArray(users)) {
                     console.error('Users data is not an array:', users);
                     document.getElementById('usersList').innerHTML = '<p class="text-danger">Invalid user data format</p>';
                     return;
                 }
-                
+
                 if (users.length === 0) {
                     document.getElementById('usersList').innerHTML = '<p>No users found with current filters</p>';
                     return;
@@ -1531,7 +1995,7 @@
                 // Show/hide results summary
                 const summaryElement = document.getElementById('userResultsSummary');
                 const summaryText = document.getElementById('userResultsText');
-                
+
                 if (this.hasActiveFilters()) {
                     summaryText.textContent = `Showing ${totalElements} user${totalElements !== 1 ? 's' : ''} (Page ${currentPage} of ${totalPages})`;
                     summaryElement.classList.remove('d-none');
@@ -1620,7 +2084,7 @@
                 this.userFilters.active = document.getElementById('filterStatus').value;
                 this.userFilters.sort = document.getElementById('sortField').value;
                 this.userFilters.direction = document.getElementById('sortDirection').value;
-                
+
                 this.loadUsers(true);
             }
 
@@ -1636,7 +2100,7 @@
                 document.getElementById('filterStatus').value = '';
                 document.getElementById('sortField').value = 'name';
                 document.getElementById('sortDirection').value = 'asc';
-                
+
                 this.userFilters = {
                     page: 0,
                     size: 20,
@@ -1647,7 +2111,7 @@
                     department: '',
                     active: ''
                 };
-                
+
                 this.loadUsers(true);
             }
 
@@ -1657,9 +2121,9 @@
             }
 
             hasActiveFilters() {
-                return this.userFilters.search || this.userFilters.role || 
-                       this.userFilters.department || this.userFilters.active !== '' ||
-                       this.userFilters.sort !== 'name' || this.userFilters.direction !== 'asc';
+                return this.userFilters.search || this.userFilters.role ||
+                    this.userFilters.department || this.userFilters.active !== '' ||
+                    this.userFilters.sort !== 'name' || this.userFilters.direction !== 'asc';
             }
 
             goToPage(page) {
@@ -1675,7 +2139,7 @@
             async viewUser(userId) {
                 this.currentViewUserId = userId;
                 const modal = new bootstrap.Modal(document.getElementById('userViewModal'));
-                
+
                 // Reset modal content
                 document.getElementById('userViewContent').innerHTML = `
                     <div class="text-center">
@@ -1685,16 +2149,16 @@
                         <p class="mt-2">Loading user details...</p>
                     </div>
                 `;
-                
+
                 // Show modal first
                 modal.show();
-                
+
                 try {
                     const response = await window.employeePortalApp.apiCall(`/users/${userId}`);
                     if (response && response.ok) {
                         const user = await response.json();
                         this.displayUserDetails(user);
-                        
+
                         // Show/hide edit button based on role
                         const editButton = document.getElementById('editUserFromView');
                         if (this.currentUser.role === 'IT_ADMIN') {
@@ -1724,7 +2188,7 @@
             displayUserDetails(user) {
                 const content = `
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-8">
                             <div class="card">
                                 <div class="card-header">
                                     <h6 class="mb-0"><i class="bi bi-person"></i> Personal Information</h6>
@@ -1741,6 +2205,33 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6 class="mb-0"><i class="bi bi-image"></i> Profile Picture</h6>
+                                </div>
+                                <div class="card-body text-center">
+                                    ${user.profilePicture ?
+                        `<img src="/api/files/profile-pictures/${user.profilePicture}" 
+                                              alt="Profile Picture" 
+                                              class="rounded-circle" 
+                                              style="width: 100px; height: 100px; object-fit: cover; border: 2px solid #dee2e6;"
+                                              onerror="this.style.display='none'; this.nextElementSibling.style.display='inline-flex';">
+                                         <div class="bg-light rounded-circle align-items-center justify-content-center" 
+                                              style="width: 100px; height: 100px; font-size: 36px; color: #6c757d; display: none;">
+                                             <i class="bi bi-person-circle"></i>
+                                         </div>` :
+                        `<div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center" 
+                                              style="width: 100px; height: 100px; font-size: 36px; color: #6c757d;">
+                                             <i class="bi bi-person-circle"></i>
+                                         </div>`
+                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-header">
@@ -1786,7 +2277,7 @@
                     // Close view modal
                     const viewModal = bootstrap.Modal.getInstance(document.getElementById('userViewModal'));
                     viewModal.hide();
-                    
+
                     // Open edit modal
                     setTimeout(() => {
                         this.editUser(this.currentViewUserId);
@@ -1796,13 +2287,13 @@
 
             async editUser(userId) {
                 this.currentEditUserId = userId;
-                
+
                 try {
                     const response = await window.employeePortalApp.apiCall(`/users/${userId}`);
                     if (response && response.ok) {
                         const user = await response.json();
                         this.populateEditForm(user);
-                        
+
                         const modal = new bootstrap.Modal(document.getElementById('userEditModal'));
                         modal.show();
                     } else {
@@ -1820,39 +2311,36 @@
                 document.getElementById('editUserRole').value = user.role || '';
                 document.getElementById('editUserDepartment').value = user.department || '';
                 document.getElementById('editUserPosition').value = user.position || '';
-                
-                // Parse existing contact info to separate country code and number
+
+                // Parse existing contact info to extract Bahraini phone number
                 if (user.contactInfo) {
-                    const contactInfo = user.contactInfo;
-                    // Try to extract country code from the beginning
-                    const countryCodeMatch = contactInfo.match(/^(\+\d{1,4})/);
-                    if (countryCodeMatch) {
-                        const countryCode = countryCodeMatch[1];
-                        const phoneNumber = contactInfo.substring(countryCode.length);
-                        document.getElementById('editUserCountryCode').value = countryCode;
-                        document.getElementById('editUserContactInfo').value = phoneNumber;
+                    const contactMatch = user.contactInfo.match(/^\+973(.*)$/);
+                    if (contactMatch) {
+                        document.getElementById('editUserContactInfo').value = contactMatch[1];
                     } else {
-                        // If no country code found, assume it's just a phone number
-                        document.getElementById('editUserCountryCode').value = '+1';
-                        document.getElementById('editUserContactInfo').value = contactInfo;
+                        // If it's not a Bahraini number, clear the field
+                        document.getElementById('editUserContactInfo').value = '';
                     }
                 } else {
-                    document.getElementById('editUserCountryCode').value = '+1';
                     document.getElementById('editUserContactInfo').value = '';
                 }
-                
+
                 document.getElementById('editUserJoinDate').value = user.joinDate || '';
                 document.getElementById('editUserActive').value = user.active ? 'true' : 'false';
             }
 
             async saveUserChanges(event) {
                 event.preventDefault();
-                
-                // Combine country code and phone number
-                const countryCode = document.getElementById('editUserCountryCode').value;
+
+                // Combine Bahraini country code and phone number
                 const phoneNumber = document.getElementById('editUserContactInfo').value.trim();
-                const fullContactInfo = phoneNumber ? `${countryCode}${phoneNumber}` : null;
-                
+                // Validate Bahraini phone number format (8 digits)
+                if (phoneNumber && !/^\d{8}$/.test(phoneNumber)) {
+                    window.employeePortalApp.showAlert('Please enter a valid 8-digit Bahraini phone number', 'danger');
+                    return;
+                }
+                const fullContactInfo = phoneNumber ? `+973${phoneNumber}` : null;
+
                 const formData = {
                     name: document.getElementById('editUserName').value.trim(),
                     email: document.getElementById('editUserEmail').value.trim(),
@@ -1871,11 +2359,11 @@
 
                     if (response && response.ok) {
                         window.employeePortalApp.showAlert('User updated successfully!', 'success');
-                        
+
                         // Close modal
                         const modal = bootstrap.Modal.getInstance(document.getElementById('userEditModal'));
                         modal.hide();
-                        
+
                         // Reload users list
                         await this.loadUsers();
                     } else {
@@ -1904,7 +2392,7 @@
             async toggleUserStatus(userId, currentStatus) {
                 const action = currentStatus ? 'deactivate' : 'reactivate';
                 const actionText = currentStatus ? 'deactivate' : 'activate';
-                
+
                 if (!confirm(`Are you sure you want to ${actionText} this user?`)) {
                     return;
                 }
@@ -1939,26 +2427,26 @@
             showCreateUserModal() {
                 // Reset form
                 document.getElementById('userCreateForm').reset();
-                
+
                 // Set default join date to today
                 document.getElementById('createUserJoinDate').value = new Date().toISOString().split('T')[0];
-                
+
                 // Add event listeners for automatic email generation
                 const firstNameField = document.getElementById('createUserFirstName');
                 const lastNameField = document.getElementById('createUserLastName');
                 const emailField = document.getElementById('createUserEmail');
-                
+
                 // Remove any existing event listeners
                 if (this.generateEmailFromNames) {
                     firstNameField.removeEventListener('input', this.generateEmailFromNames);
                     lastNameField.removeEventListener('input', this.generateEmailFromNames);
                 }
-                
+
                 // Add new event listener function
                 this.generateEmailFromNames = () => {
                     const firstName = firstNameField.value.trim().toLowerCase().replace(/[^a-z]/g, '');
                     const lastName = lastNameField.value.trim().toLowerCase().replace(/[^a-z]/g, '');
-                    
+
                     if (firstName && lastName) {
                         emailField.value = `${firstName}.${lastName}@array.world`;
                     } else if (firstName) {
@@ -1967,28 +2455,32 @@
                         emailField.value = '';
                     }
                 };
-                
+
                 // Add event listeners to both name fields
                 firstNameField.addEventListener('input', this.generateEmailFromNames);
                 lastNameField.addEventListener('input', this.generateEmailFromNames);
-                
+
                 const modal = new bootstrap.Modal(document.getElementById('userCreateModal'));
                 modal.show();
             }
 
             async createUser(event) {
                 event.preventDefault();
-                
-                // Combine country code and phone number
-                const countryCode = document.getElementById('createUserCountryCode').value;
+
+                // Combine Bahraini country code and phone number
                 const phoneNumber = document.getElementById('createUserContactInfo').value.trim();
-                const fullContactInfo = phoneNumber ? `${countryCode}${phoneNumber}` : null;
-                
+                // Validate Bahraini phone number format (8 digits)
+                if (phoneNumber && !/^\d{8}$/.test(phoneNumber)) {
+                    window.employeePortalApp.showAlert('Please enter a valid 8-digit Bahraini phone number', 'danger');
+                    return;
+                }
+                const fullContactInfo = phoneNumber ? `+973${phoneNumber}` : null;
+
                 // Combine first and last names
                 const firstName = document.getElementById('createUserFirstName').value.trim();
                 const lastName = document.getElementById('createUserLastName').value.trim();
                 const fullName = `${firstName} ${lastName}`.trim();
-                
+
                 const formData = {
                     name: fullName,
                     email: document.getElementById('createUserEmail').value.trim(),
@@ -2008,11 +2500,11 @@
 
                     if (response && response.ok) {
                         window.employeePortalApp.showAlert('User created successfully!', 'success');
-                        
+
                         // Close modal
                         const modal = bootstrap.Modal.getInstance(document.getElementById('userCreateModal'));
                         modal.hide();
-                        
+
                         // Reload users list
                         await this.loadUsers();
                     } else {
@@ -2020,7 +2512,7 @@
                         try {
                             const errorData = await response.json();
                             console.log('Error response:', errorData);
-                            
+
                             if (errorData.validationErrors) {
                                 // Handle validation errors from GlobalExceptionHandler
                                 const validationMessages = Object.entries(errorData.validationErrors)
@@ -2050,6 +2542,134 @@
                     window.employeePortalApp.showAlert('Error creating user: ' + error.message, 'danger');
                 }
             }
+
+            async showUserManagement() {
+                this.showContent('usersContent');
+
+                try {
+                    const response = await window.employeePortalApp.apiCall('/users?page=0&size=20');
+                    if (response && response.ok) {
+                        const data = await response.json();
+                        this.renderUserManagement(data);
+                    } else {
+                        window.employeePortalApp.showAlert('Failed to load users', 'danger');
+                    }
+                } catch (error) {
+                    console.error('Error loading users:', error);
+                    window.employeePortalApp.showAlert('Error loading users', 'danger');
+                }
+            }
+
+            renderUserManagement(data) {
+                const users = data.content || [];
+                const currentUserId = this.currentUser.id;
+
+                // Update user count
+                document.getElementById('userCount').textContent = `${users.length} users`;
+
+                const usersTableHtml = `
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Department</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${users.map(user => `
+                                    <tr>
+                                        <td>${user.name}</td>
+                                        <td>${user.email}</td>
+                                        <td>${this.formatRole(user.role)}</td>
+                                        <td>${user.department || 'Not assigned'}</td>
+                                        <td>
+                                            <span class="badge ${user.active ? 'bg-success' : 'bg-danger'}">
+                                                ${user.active ? 'Active' : 'Inactive'}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm" role="group">
+                                                <button class="btn btn-outline-primary" onclick="dashboardApp.editUser(${user.id})" title="Edit User">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                ${user.id !== currentUserId ? `
+                                                    ${user.active ? `
+                                                        <button class="btn btn-outline-danger" onclick="dashboardApp.deactivateUser(${user.id}, '${user.name}')" title="Deactivate User">
+                                                            <i class="bi bi-person-x"></i>
+                                                        </button>
+                                                    ` : `
+                                                        <button class="btn btn-outline-success" onclick="dashboardApp.reactivateUser(${user.id}, '${user.name}')" title="Reactivate User">
+                                                            <i class="bi bi-person-check"></i>
+                                                        </button>
+                                                    `}
+                                                ` : `
+                                                    <button class="btn btn-outline-secondary" disabled title="Cannot deactivate yourself">
+                                                        <i class="bi bi-person-lock"></i>
+                                                    </button>
+                                                `}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+
+                document.getElementById('usersList').innerHTML = usersTableHtml;
+            }
+
+            async deactivateUser(userId, userName) {
+                if (userId === this.currentUser.id) {
+                    window.employeePortalApp.showAlert('You cannot deactivate yourself', 'warning');
+                    return;
+                }
+
+                if (confirm(`Are you sure you want to deactivate user "${userName}"?`)) {
+                    try {
+                        const response = await window.employeePortalApp.apiCall(`/users/${userId}`, {
+                            method: 'DELETE'
+                        });
+
+                        if (response && response.ok) {
+                            window.employeePortalApp.showAlert('User deactivated successfully', 'success');
+                            this.showUserManagement(); // Reload the user list
+                        } else {
+                            const errorData = await response.json();
+                            window.employeePortalApp.showAlert(errorData.message || 'Failed to deactivate user', 'danger');
+                        }
+                    } catch (error) {
+                        console.error('Error deactivating user:', error);
+                        window.employeePortalApp.showAlert('Error deactivating user', 'danger');
+                    }
+                }
+            }
+
+            async reactivateUser(userId, userName) {
+                if (confirm(`Are you sure you want to reactivate user "${userName}"?`)) {
+                    try {
+                        const response = await window.employeePortalApp.apiCall(`/users/${userId}/reactivate`, {
+                            method: 'POST'
+                        });
+
+                        if (response && response.ok) {
+                            window.employeePortalApp.showAlert('User reactivated successfully', 'success');
+                            this.showUserManagement(); // Reload the user list
+                        } else {
+                            const errorData = await response.json();
+                            window.employeePortalApp.showAlert(errorData.message || 'Failed to reactivate user', 'danger');
+                        }
+                    } catch (error) {
+                        console.error('Error reactivating user:', error);
+                        window.employeePortalApp.showAlert('Error reactivating user', 'danger');
+                    }
+                }
+            }
         }
 
         // Initialize dashboard when DOM is loaded
@@ -2058,4 +2678,5 @@
         });
     </script>
 </body>
+
 </html>

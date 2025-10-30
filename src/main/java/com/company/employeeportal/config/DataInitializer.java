@@ -40,6 +40,14 @@ public class DataInitializer implements CommandLineRunner {
             logger.info("Found old @company.com emails, clearing database and recreating users with @array.world");
             userRepository.deleteAll();
         } else if (userRepository.count() > 0) {
+            // Check if IT admin exists and ensure they are active
+            User itAdmin = userRepository.findByEmail("itadmin@array.world").orElse(null);
+            if (itAdmin != null && !itAdmin.getActive()) {
+                logger.info("IT Admin user exists but is inactive, reactivating...");
+                itAdmin.setActive(true);
+                userRepository.save(itAdmin);
+                logger.info("IT Admin user reactivated: {}", itAdmin.getEmail());
+            }
             logger.info("Users already exist with correct emails, skipping initialization");
             return;
         }

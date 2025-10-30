@@ -25,18 +25,19 @@ class EmployeePortalApp {
     }
 
     async apiCall(endpoint, options = {}) {
-        const defaultOptions = {
-            headers: {
-                'Content-Type': 'application/json',
-                ...(this.token && { 'Authorization': `Bearer ${this.token}` })
-            }
+        const defaultHeaders = {
+            ...(this.token && { 'Authorization': `Bearer ${this.token}` })
         };
 
+        // Only add Content-Type for non-FormData requests
+        if (!(options.body instanceof FormData)) {
+            defaultHeaders['Content-Type'] = 'application/json';
+        }
+
         const mergedOptions = {
-            ...defaultOptions,
             ...options,
             headers: {
-                ...defaultOptions.headers,
+                ...defaultHeaders,
                 ...options.headers
             }
         };

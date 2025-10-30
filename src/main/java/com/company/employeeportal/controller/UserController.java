@@ -20,6 +20,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +35,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/users")
 public class UserController {
 
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
 
     @Autowired
@@ -64,7 +68,7 @@ public class UserController {
     @PutMapping("/profile")
     @PreAuthorize("hasRole('EMPLOYEE') or hasRole('MANAGER') or hasRole('IT_ADMIN')")
     public ResponseEntity<UserProfileResponse> updateCurrentUserProfile(
-            @Valid @RequestBody UserProfileUpdateRequest updateRequest,
+            @RequestBody UserProfileUpdateRequest updateRequest,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
         
         User currentUser = userService.getUserProfile(userPrincipal.getId());
@@ -90,6 +94,34 @@ public class UserController {
         userService.changePassword(userPrincipal.getId(), changePasswordRequest, currentUser);
         
         return ResponseEntity.ok("Password changed successfully");
+    }
+
+    /**
+     * Upload profile picture for current user.
+     * 
+     * @param file the profile picture file
+     * @param userPrincipal the authenticated user
+     * @return success response with file path
+     */
+    @PostMapping("/profile/picture")
+    @PreAuthorize("hasRole('EMPLOYEE') or hasRole('MANAGER') or hasRole('IT_ADMIN')")
+    public ResponseEntity<String> uploadProfilePicture(
+            @RequestParam("file") MultipartFile file,
+            @AuthenticationPrincipal UserPrincipal userPrincipal) {
+        
+        try {
+            User currentUser = userService.getUserProfile(userPrincipal.getId());
+            String filePath = userService.uploadProfilePicture(userPrincipal.getId(), file, currentUser);
+            
+            return ResponseEntity.ok("Profile picture uploaded successfully: " + filePath);
+        } catch (IllegalArgumentException e) {
+            logger.error("Validation error during profile picture upload for user {}: {}", userPrincipal.getId(), e.getMessage(), e);
+            return ResponseEntity.badRequest().body("Validation error: " + e.getMessage());
+        } catch (Exception e) {
+            logger.error("Unexpected error during profile picture upload for user {}: {}", userPrincipal.getId(), e.getMessage(), e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to upload profile picture: " + e.getMessage());
+        }
     }
 
     /**
@@ -357,6 +389,7 @@ public class UserController {
         response.setDepartment(user.getDepartment());
         response.setPosition(user.getPosition());
         response.setContactInfo(user.getContactInfo());
+        response.setProfilePicture(user.getProfilePicture());
         response.setJoinDate(user.getJoinDate());
         response.setActive(user.getActive());
         response.setCreatedAt(user.getCreatedAt());
