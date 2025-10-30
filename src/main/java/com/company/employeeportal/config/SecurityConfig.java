@@ -18,6 +18,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpMethod;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -101,9 +103,12 @@ public class SecurityConfig {
                 .requestMatchers("/api/leaves/pending").hasRole("HR")
                 .requestMatchers("/api/leaves/*/approve").hasRole("HR")
                 .requestMatchers("/api/leaves/*/reject").hasRole("HR")
-                .requestMatchers("/api/announcements/create").hasRole("HR")
-                .requestMatchers("/api/announcements/*/update").hasRole("HR")
-                .requestMatchers("/api/announcements/*/delete").hasRole("HR")
+                .requestMatchers("/api/leaves/all").hasRole("HR")
+                .requestMatchers(HttpMethod.POST, "/api/announcements").hasRole("HR")
+                .requestMatchers(HttpMethod.PUT, "/api/announcements/*").hasRole("HR")
+                .requestMatchers(HttpMethod.DELETE, "/api/announcements/*").hasRole("HR")
+                .requestMatchers("/api/announcements/*/reactivate").hasRole("HR")
+                .requestMatchers("/api/announcements/admin/**").hasRole("HR")
                 
                 // IT Admin endpoints - accessible by IT Admin and HR
                 .requestMatchers("/api/users").hasAnyRole("IT_ADMIN", "HR")

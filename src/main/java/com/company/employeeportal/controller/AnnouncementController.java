@@ -41,7 +41,7 @@ public class AnnouncementController {
      * Ordered by creation date descending (most recent first).
      */
     @GetMapping
-    @PreAuthorize("hasRole('EMPLOYEE') or hasRole('MANAGER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('EMPLOYEE') or hasRole('HR') or hasRole('IT_ADMIN') or hasRole('FINANCE')")
     public ResponseEntity<Page<AnnouncementResponse>> getActiveAnnouncements(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @PageableDefault(size = 10, sort = "createdAt") Pageable pageable) {
@@ -58,7 +58,7 @@ public class AnnouncementController {
      * Get recent announcements for dashboard (last 5).
      */
     @GetMapping("/recent")
-    @PreAuthorize("hasRole('EMPLOYEE') or hasRole('MANAGER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('EMPLOYEE') or hasRole('HR') or hasRole('IT_ADMIN') or hasRole('FINANCE')")
     public ResponseEntity<List<AnnouncementResponse>> getRecentAnnouncements(
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
         
@@ -74,7 +74,7 @@ public class AnnouncementController {
      * Get announcement by ID.
      */
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('EMPLOYEE') or hasRole('MANAGER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('EMPLOYEE') or hasRole('HR') or hasRole('IT_ADMIN') or hasRole('FINANCE')")
     public ResponseEntity<AnnouncementResponse> getAnnouncementById(
             @PathVariable Long id,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
@@ -91,7 +91,7 @@ public class AnnouncementController {
      * Search announcements by title or content.
      */
     @GetMapping("/search")
-    @PreAuthorize("hasRole('EMPLOYEE') or hasRole('MANAGER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('EMPLOYEE') or hasRole('HR') or hasRole('IT_ADMIN') or hasRole('FINANCE')")
     public ResponseEntity<Page<AnnouncementResponse>> searchAnnouncements(
             @RequestParam String query,
             @RequestParam(defaultValue = "true") boolean activeOnly,
@@ -110,7 +110,7 @@ public class AnnouncementController {
      * Mark an announcement as read.
      */
     @PostMapping("/{id}/mark-read")
-    @PreAuthorize("hasRole('EMPLOYEE') or hasRole('MANAGER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('EMPLOYEE') or hasRole('HR') or hasRole('IT_ADMIN') or hasRole('FINANCE')")
     public ResponseEntity<Void> markAnnouncementAsRead(
             @PathVariable Long id,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
@@ -126,7 +126,7 @@ public class AnnouncementController {
      * Check if an announcement has been read by the current user.
      */
     @GetMapping("/{id}/read-status")
-    @PreAuthorize("hasRole('EMPLOYEE') or hasRole('MANAGER') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('EMPLOYEE') or hasRole('HR') or hasRole('IT_ADMIN') or hasRole('FINANCE')")
     public ResponseEntity<Boolean> getReadStatus(
             @PathVariable Long id,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
@@ -139,10 +139,10 @@ public class AnnouncementController {
     // Admin-only endpoints
 
     /**
-     * Get all announcements (active and inactive) for admin with pagination.
+     * Get all announcements (active and inactive) for HR with pagination.
      */
     @GetMapping("/admin/all")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('HR')")
     public ResponseEntity<Page<AnnouncementResponse>> getAllAnnouncements(
             @AuthenticationPrincipal UserPrincipal userPrincipal,
             @PageableDefault(size = 10, sort = "createdAt") Pageable pageable) {
@@ -156,10 +156,10 @@ public class AnnouncementController {
     }
 
     /**
-     * Create a new announcement (Admin only).
+     * Create a new announcement (HR only).
      */
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('HR')")
     public ResponseEntity<AnnouncementResponse> createAnnouncement(
             @Valid @RequestBody AnnouncementRequest request,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
@@ -173,10 +173,10 @@ public class AnnouncementController {
     }
 
     /**
-     * Update an existing announcement (Admin only).
+     * Update an existing announcement (HR only).
      */
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('HR')")
     public ResponseEntity<AnnouncementResponse> updateAnnouncement(
             @PathVariable Long id,
             @Valid @RequestBody AnnouncementRequest request,
@@ -191,10 +191,10 @@ public class AnnouncementController {
     }
 
     /**
-     * Deactivate an announcement (soft delete) (Admin only).
+     * Deactivate an announcement (soft delete) (HR only).
      */
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('HR')")
     public ResponseEntity<Void> deactivateAnnouncement(
             @PathVariable Long id,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
@@ -207,10 +207,10 @@ public class AnnouncementController {
     }
 
     /**
-     * Reactivate an announcement (Admin only).
+     * Reactivate an announcement (HR only).
      */
     @PostMapping("/{id}/reactivate")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('HR')")
     public ResponseEntity<Void> reactivateAnnouncement(
             @PathVariable Long id,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
@@ -223,10 +223,10 @@ public class AnnouncementController {
     }
 
     /**
-     * Get announcement statistics for admin dashboard.
+     * Get announcement statistics for HR dashboard.
      */
     @GetMapping("/admin/statistics")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('HR')")
     public ResponseEntity<AnnouncementService.AnnouncementStatistics> getAnnouncementStatistics() {
         
         logger.debug("Retrieving announcement statistics for admin dashboard");

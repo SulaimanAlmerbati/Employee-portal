@@ -783,6 +783,11 @@
                     this.submitLeaveRequest();
                 });
 
+                // Announcement creation form
+                document.getElementById('createAnnouncementForm').addEventListener('submit', (e) => {
+                    this.createAnnouncement(e);
+                });
+
                 // User search input - trigger search on Enter key and update character count
                 const searchInput = document.getElementById('userSearchInput');
                 const charCount = document.getElementById('searchCharCount');
@@ -1368,6 +1373,133 @@
                 `).join('');
 
                 document.getElementById('announcementsList').innerHTML = announcementsHtml;
+            }
+
+            async loadAnnouncementManagement() {
+                try {
+                    const response = await window.employeePortalApp.apiCall('/announcements/admin/all');
+                    if (response && response.ok) {
+                        const announcements = await response.json();
+                        this.displayManagementAnnouncements(announcements.content || announcements);
+                    }
+                } catch (error) {
+                    console.error('Failed to load announcement management:', error);
+                    document.getElementById('managementAnnouncementsList').innerHTML = '<p class="text-danger">Failed to load announcements</p>';
+                }
+            }
+
+            displayManagementAnnouncements(announcements) {
+                if (announcements.length === 0) {
+                    document.getElementById('managementAnnouncementsList').innerHTML = '<p>No announcements found</p>';
+                    return;
+                }
+
+                const announcementsHtml = announcements.map(announcement => `
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h6 class="card-title">
+                                        ${announcement.title}
+                                        <span class="badge bg-${announcement.active ? 'success' : 'secondary'} ms-2">
+                                            ${announcement.active ? 'Active' : 'Inactive'}
+                                        </span>
+                                    </h6>
+                                    <p class="card-text">${announcement.preview || announcement.content}</p>
+                                    <small class="text-muted">
+                                        Created: ${new Date(announcement.createdAt).toLocaleDateString()}
+                                        by ${announcement.createdByName}
+                                    </small>
+                                </div>
+                                <div class="btn-group-vertical ms-2">
+                                    <button class="btn btn-outline-primary btn-sm" onclick="dashboardApp.editAnnouncement(${announcement.id})">
+                                        <i class="bi bi-pencil"></i> Edit
+                                    </button>
+                                    ${announcement.active ? 
+                                        `<button class="btn btn-outline-danger btn-sm mt-1" onclick="dashboardApp.deactivateAnnouncement(${announcement.id})">
+                                            <i class="bi bi-eye-slash"></i> Deactivate
+                                        </button>` :
+                                        `<button class="btn btn-outline-success btn-sm mt-1" onclick="dashboardApp.reactivateAnnouncement(${announcement.id})">
+                                            <i class="bi bi-eye"></i> Reactivate
+                                        </button>`
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                document.getElementById('managementAnnouncementsList').innerHTML = announcementsHtml;
+            }
+
+            async createAnnouncement(event) {
+                event.preventDefault();
+                
+                const formData = {
+                    title: document.getElementById('announcementTitle').value.trim(),
+                    content: document.getElementById('announcementContent').value.trim()
+                };
+
+                try {
+                    const response = await window.employeePortalApp.apiCall('/announcements', {
+                        method: 'POST',
+                        body: JSON.stringify(formData)
+                    });
+
+                    if (response && response.ok) {
+                        window.employeePortalApp.showAlert('Announcement created successfully!', 'success');
+                        document.getElementById('createAnnouncementForm').reset();
+                        await this.loadAnnouncementManagement();
+                    } else {
+                        const error = await response.json();
+                        window.employeePortalApp.showAlert('Failed to create announcement: ' + error.message, 'danger');
+                    }
+                } catch (error) {
+                    console.error('Failed to create announcement:', error);
+                    window.employeePortalApp.showAlert('Failed to create announcement', 'danger');
+                }
+            }
+
+            async deactivateAnnouncement(announcementId) {
+                if (!confirm('Are you sure you want to deactivate this announcement?')) {
+                    return;
+                }
+
+                try {
+                    const response = await window.employeePortalApp.apiCall(`/announcements/${announcementId}`, {
+                        method: 'DELETE'
+                    });
+
+                    if (response && response.ok) {
+                        window.employeePortalApp.showAlert('Announcement deactivated successfully!', 'success');
+                        await this.loadAnnouncementManagement();
+                    } else {
+                        const error = await response.json();
+                        window.employeePortalApp.showAlert('Failed to deactivate announcement: ' + error.message, 'danger');
+                    }
+                } catch (error) {
+                    console.error('Failed to deactivate announcement:', error);
+                    window.employeePortalApp.showAlert('Failed to deactivate announcement', 'danger');
+                }
+            }
+
+            async reactivateAnnouncement(announcementId) {
+                try {
+                    const response = await window.employeePortalApp.apiCall(`/announcements/${announcementId}/reactivate`, {
+                        method: 'POST'
+                    });
+
+                    if (response && response.ok) {
+                        window.employeePortalApp.showAlert('Announcement reactivated successfully!', 'success');
+                        await this.loadAnnouncementManagement();
+                    } else {
+                        const error = await response.json();
+                        window.employeePortalApp.showAlert('Failed to reactivate announcement: ' + error.message, 'danger');
+                    }
+                } catch (error) {
+                    console.error('Failed to reactivate announcement:', error);
+                    window.employeePortalApp.showAlert('Failed to reactivate announcement', 'danger');
+                }
             }
 
             // User management state
