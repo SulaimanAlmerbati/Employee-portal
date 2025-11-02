@@ -687,7 +687,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="editProfileModalLabel">
-                        <i class="bi bi-person-gear"></i> Edit Profile
+                        <i class="bi bi-person-gear"></i> <span id="editProfileTitle">Edit Profile</span>
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -748,6 +748,7 @@
                                             placeholder="33123456" pattern="[0-9]{8}" inputmode="numeric" maxlength="8">
                                     </div>
                                     <div class="form-text">Enter 8-digit Bahraini mobile number (e.g., 33123456)</div>
+                                    <div class="form-text profile-restriction d-none text-warning">Only IT Admin can change contact info</div>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -844,15 +845,25 @@
             }
 
             async loadUserProfile() {
-                const response = await window.employeePortalApp.apiCall('/users/profile');
-                if (response && response.ok) {
-                    this.currentUser = await response.json();
-                    document.getElementById('userName').textContent = this.currentUser.name;
+                try {
+                    const response = await window.employeePortalApp.apiCall('/users/profile');
+                    if (response && response.ok) {
+                        this.currentUser = await response.json();
+                        document.getElementById('userName').textContent = this.currentUser.name;
 
-                    // Show role-specific navigation
-                    this.updateNavigationForRole(this.currentUser.role);
-                } else {
-                    throw new Error('Failed to load user profile');
+                        // Show role-specific navigation
+                        this.updateNavigationForRole(this.currentUser.role);
+                    } else {
+                        console.error('Failed to load user profile:', response?.status);
+                        // Set a default user object to prevent errors
+                        this.currentUser = { name: 'User', role: 'EMPLOYEE' };
+                        document.getElementById('userName').textContent = 'User';
+                    }
+                } catch (error) {
+                    console.error('Error loading user profile:', error);
+                    // Set a default user object to prevent errors
+                    this.currentUser = { name: 'User', role: 'EMPLOYEE' };
+                    document.getElementById('userName').textContent = 'User';
                 }
             }
 
@@ -1151,20 +1162,47 @@
             }
 
             async loadProfile() {
+                // Show loading state
+                document.getElementById('profileDetails').innerHTML = `
+                    <div class="d-flex justify-content-center align-items-center" style="min-height: 300px;">
+                        <div class="text-center">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-2 text-muted">Loading profile...</p>
+                        </div>
+                    </div>
+                `;
+
                 try {
                     const response = await window.employeePortalApp.apiCall('/users/profile');
                     if (response && response.ok) {
                         const user = await response.json();
                         this.renderProfile(user);
                     } else {
-                        document.getElementById('profileDetails').innerHTML =
-                            '<div class="alert alert-danger">Failed to load profile information.</div>';
+                        this.showProfileError('Unable to load profile information. Please try again.');
                     }
                 } catch (error) {
                     console.error('Error loading profile:', error);
-                    document.getElementById('profileDetails').innerHTML =
-                        '<div class="alert alert-danger">Error loading profile information.</div>';
+                    this.showProfileError('Connection error. Please check your internet connection and try again.');
                 }
+            }
+
+            showProfileError(message) {
+                document.getElementById('profileDetails').innerHTML = `
+                    <div class="d-flex justify-content-center align-items-center" style="min-height: 300px;">
+                        <div class="text-center">
+                            <div class="mb-3">
+                                <i class="bi bi-exclamation-triangle text-warning" style="font-size: 3rem;"></i>
+                            </div>
+                            <h5 class="text-muted">Oops! Something went wrong</h5>
+                            <p class="text-muted">${message}</p>
+                            <button class="btn btn-primary" onclick="dashboardApp.loadProfile()">
+                                <i class="bi bi-arrow-clockwise"></i> Try Again
+                            </button>
+                        </div>
+                    </div>
+                `;
             }
 
             renderProfile(user) {
@@ -1229,8 +1267,8 @@
                     }
                                 <h5 class="mt-3">${user.name}</h5>
                                 <p class="text-muted">${this.formatRole(user.role)}</p>
-                                <button class="btn btn-primary btn-sm" onclick="dashboardApp.showEditProfileModal()">
-                                    <i class="bi bi-pencil"></i> Edit Profile
+                                <button class="btn btn-primary btn-sm" onclick="dashboardApp.showEditProfileModal()" id="editProfileButton">
+                                    <i class="bi bi-pencil"></i> <span id="editProfileButtonText">Edit Profile</span>
                                 </button>
                                 <button class="btn btn-outline-secondary btn-sm ms-2" onclick="dashboardApp.showChangePasswordModal()">
                                     <i class="bi bi-key"></i> Change Password
@@ -1241,6 +1279,18 @@
                 `;
 
                 document.getElementById('profileDetails').innerHTML = profileHtml;
+                
+                // Update button text based on user role (with delay to ensure DOM is ready)
+                setTimeout(() => {
+                    if (this.currentUser) {
+                        const isITAdmin = this.currentUser.role === 'IT_ADMIN';
+                        const buttonText = isITAdmin ? 'Edit Profile' : 'Update Picture';
+                        const buttonElement = document.getElementById('editProfileButtonText');
+                        if (buttonElement) {
+                            buttonElement.textContent = buttonText;
+                        }
+                    }
+                }, 100);
             }
 
             formatRole(role) {
@@ -1280,25 +1330,35 @@
                         // Apply role-based restrictions
                         this.applyProfileEditRestrictions();
 
+                        // Update modal title based on user role
+                        const isITAdmin = this.currentUser.role === 'IT_ADMIN';
+                        document.getElementById('editProfileTitle').textContent = 
+                            isITAdmin ? 'Edit Profile' : 'Update Profile Picture';
+
                         const modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
                         modal.show();
+                    } else {
+                        // Don't show intrusive alerts for modal loading errors
+                        // Just log the error and fail silently
+                        console.error('Failed to load profile for editing:', response?.status);
                     }
                 } catch (error) {
                     console.error('Error loading profile for edit:', error);
-                    window.employeePortalApp.showAlert('Error loading profile information', 'danger');
+                    // Don't show intrusive alerts for modal loading errors
                 }
             }
 
             applyProfileEditRestrictions() {
                 const isITAdmin = this.currentUser.role === 'IT_ADMIN';
 
-                // Fields that only IT Admin can edit
-                const restrictedFields = [
+                // For non-admin users, ALL fields except profile picture are read-only
+                const allProfileFields = [
                     'editProfileName',
-                    'editProfilePosition'
+                    'editProfilePosition',
+                    'editProfileContactInfo'
                 ];
 
-                restrictedFields.forEach(fieldId => {
+                allProfileFields.forEach(fieldId => {
                     const field = document.getElementById(fieldId);
                     const restrictionText = field.parentElement.querySelector('.profile-restriction');
 
@@ -1319,8 +1379,8 @@
                     }
                 });
 
-                // Profile picture and contact info are always editable by all users
-                // Department, email, and join date are always readonly for everyone
+                // Email, department, and join date are always readonly for everyone
+                // Only profile picture is editable by all users
             }
 
             showChangePasswordModal() {
@@ -1347,15 +1407,17 @@
                     // Check if user is IT Admin to determine which fields to update
                     const isITAdmin = this.currentUser.role === 'IT_ADMIN';
 
-                    const formData = {
-                        email: document.getElementById('editProfileEmail').value.trim(),
-                        contactInfo: fullContactInfo
-                    };
-
-                    // Only include name and position if user is IT Admin
+                    // For non-admin users, don't update any profile fields - only allow profile picture upload
+                    let formData = {};
+                    
                     if (isITAdmin) {
-                        formData.name = document.getElementById('editProfileName').value.trim();
-                        formData.position = document.getElementById('editProfilePosition').value.trim() || null;
+                        // IT Admin can update all fields
+                        formData = {
+                            name: document.getElementById('editProfileName').value.trim(),
+                            email: document.getElementById('editProfileEmail').value.trim(),
+                            position: document.getElementById('editProfilePosition').value.trim() || null,
+                            contactInfo: fullContactInfo
+                        };
                     }
 
                     // Handle profile picture upload if a file is selected
@@ -1402,44 +1464,56 @@
                         }
                     }
 
-                    const response = await window.employeePortalApp.apiCall('/users/profile', {
-                        method: 'PUT',
-                        body: JSON.stringify(formData)
-                    });
+                    // Only make API call to update profile if there are fields to update (IT Admin only)
+                    if (isITAdmin && Object.keys(formData).length > 0) {
+                        const response = await window.employeePortalApp.apiCall('/users/profile', {
+                            method: 'PUT',
+                            body: JSON.stringify(formData)
+                        });
 
-                    if (response && response.ok) {
-                        const isITAdmin = this.currentUser.role === 'IT_ADMIN';
-                        let message = isITAdmin ? 'Profile updated successfully!' : 'Contact information updated successfully!';
+                        if (!response || !response.ok) {
+                            const errorData = await response.json();
+                            let errorMessage = 'Failed to update profile';
 
-                        // Update message if profile picture was also uploaded
-                        if (profilePictureUploaded) {
-                            message = isITAdmin ? 'Profile and picture updated successfully!' : 'Contact information and picture updated successfully!';
+                            if (errorData.validationErrors) {
+                                const errors = Object.values(errorData.validationErrors).join(', ');
+                                errorMessage = `Validation errors: ${errors}`;
+                            } else if (errorData.message) {
+                                errorMessage = errorData.message;
+                            }
+
+                            window.employeePortalApp.showAlert(errorMessage, 'danger');
+                            return;
                         }
+                    }
 
+                    // Show success message
+                    let message;
+                    
+                    if (profilePictureUploaded && isITAdmin) {
+                        message = 'Profile and picture updated successfully!';
+                    } else if (profilePictureUploaded) {
+                        message = 'Profile picture updated successfully!';
+                    } else if (isITAdmin) {
+                        message = 'Profile updated successfully!';
+                    } else {
+                        message = 'No changes made';
+                    }
+
+                    if (message !== 'No changes made') {
                         window.employeePortalApp.showAlert(message, 'success');
 
-                        // Close modal
-                        const modal = bootstrap.Modal.getInstance(document.getElementById('editProfileModal'));
-                        modal.hide();
-
-                        // Reload profile
-                        await this.loadProfile();
-
-                        // Update current user info
-                        await this.loadUserProfile();
-                    } else {
-                        const errorData = await response.json();
-                        let errorMessage = 'Failed to update profile';
-
-                        if (errorData.validationErrors) {
-                            const errors = Object.values(errorData.validationErrors).join(', ');
-                            errorMessage = `Validation errors: ${errors}`;
-                        } else if (errorData.message) {
-                            errorMessage = errorData.message;
-                        }
-
-                        window.employeePortalApp.showAlert(errorMessage, 'danger');
                     }
+
+                    // Close modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('editProfileModal'));
+                    modal.hide();
+
+                    // Reload profile
+                    await this.loadProfile();
+
+                    // Update current user info
+                    await this.loadUserProfile();
                 } catch (error) {
                     console.error('Error updating profile:', error);
                     window.employeePortalApp.showAlert('Error updating profile', 'danger');
@@ -2677,6 +2751,11 @@
             window.dashboardApp = new DashboardApp();
         });
     </script>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+        <!-- Toasts will be dynamically added here -->
+    </div>
 </body>
 
 </html>

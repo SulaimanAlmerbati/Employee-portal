@@ -69,23 +69,60 @@ class EmployeePortalApp {
     }
 
     showAlert(message, type = 'info') {
-        // Create and show bootstrap alert
-        const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-        alertDiv.innerHTML = `
-            ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        this.showToast(message, type);
+    }
+
+    showToast(message, type = 'info', duration = 4000) {
+        const toastContainer = document.querySelector('.toast-container');
+        if (!toastContainer) {
+            console.warn('Toast container not found');
+            return;
+        }
+
+        // Create unique ID for this toast
+        const toastId = 'toast-' + Date.now();
+        
+        // Map alert types to toast styles
+        const typeMap = {
+            'success': { bg: 'bg-success', icon: 'bi-check-circle-fill', title: 'Success' },
+            'danger': { bg: 'bg-danger', icon: 'bi-exclamation-triangle-fill', title: 'Error' },
+            'warning': { bg: 'bg-warning', icon: 'bi-exclamation-triangle-fill', title: 'Warning' },
+            'info': { bg: 'bg-info', icon: 'bi-info-circle-fill', title: 'Info' }
+        };
+
+        const config = typeMap[type] || typeMap['info'];
+
+        // Create toast element
+        const toastElement = document.createElement('div');
+        toastElement.id = toastId;
+        toastElement.className = 'toast';
+        toastElement.setAttribute('role', 'alert');
+        toastElement.innerHTML = `
+            <div class="toast-header ${config.bg} text-white">
+                <i class="bi ${config.icon} me-2"></i>
+                <strong class="me-auto">${config.title}</strong>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+            </div>
+            <div class="toast-body">
+                ${message}
+            </div>
         `;
 
-        const container = document.querySelector('.main-content') || document.body;
-        container.insertBefore(alertDiv, container.firstChild);
+        // Add to container
+        toastContainer.appendChild(toastElement);
 
-        // Auto-dismiss after 5 seconds
-        setTimeout(() => {
-            if (alertDiv.parentNode) {
-                alertDiv.remove();
-            }
-        }, 5000);
+        // Initialize and show toast
+        const toast = new bootstrap.Toast(toastElement, {
+            autohide: true,
+            delay: duration
+        });
+
+        toast.show();
+
+        // Clean up after toast is hidden
+        toastElement.addEventListener('hidden.bs.toast', () => {
+            toastElement.remove();
+        });
     }
 }
 
