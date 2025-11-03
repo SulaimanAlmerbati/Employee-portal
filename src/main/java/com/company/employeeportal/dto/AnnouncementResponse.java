@@ -17,13 +17,14 @@ public class AnnouncementResponse {
     private LocalDateTime updatedAt;
     private String preview;
     private Boolean isRead;
+    private String targetDepartment;
 
     // Constructors
     public AnnouncementResponse() {}
 
     public AnnouncementResponse(Long id, String title, String content, String createdByName,
                                Long createdById, Boolean active, LocalDateTime createdAt,
-                               LocalDateTime updatedAt) {
+                               LocalDateTime updatedAt, String targetDepartment) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -32,6 +33,7 @@ public class AnnouncementResponse {
         this.active = active;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.targetDepartment = targetDepartment;
         this.preview = generatePreview(content);
         this.isRead = false; // Default to unread
     }
@@ -118,6 +120,14 @@ public class AnnouncementResponse {
         this.isRead = isRead;
     }
 
+    public String getTargetDepartment() {
+        return targetDepartment;
+    }
+
+    public void setTargetDepartment(String targetDepartment) {
+        this.targetDepartment = targetDepartment;
+    }
+
     // Helper methods
     public boolean isActive() {
         return Boolean.TRUE.equals(this.active);
@@ -128,6 +138,13 @@ public class AnnouncementResponse {
             return "";
         }
         return content.length() > 100 ? content.substring(0, 100) + "..." : content;
+    }
+
+    public String getTargetDescription() {
+        if (targetDepartment == null || targetDepartment.trim().isEmpty()) {
+            return "Company-wide";
+        }
+        return targetDepartment;
     }
 
     @Override

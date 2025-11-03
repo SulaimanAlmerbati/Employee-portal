@@ -61,6 +61,11 @@ public interface AnnouncementReadStatusRepository extends JpaRepository<Announce
     void deleteByAnnouncement(Announcement announcement);
 
     /**
+     * Delete read status records for a specific announcement by ID.
+     */
+    void deleteByAnnouncementId(Long announcementId);
+
+    /**
      * Delete read status records for a specific user.
      */
     void deleteByUser(User user);

@@ -34,6 +34,10 @@ public class Announcement {
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
 
+    @Size(max = 100, message = "Target department must not exceed 100 characters")
+    @Column(name = "target_department", length = 100)
+    private String targetDepartment; // null means company-wide
+
     @Column(nullable = false)
     private Boolean active = true;
 
@@ -52,6 +56,14 @@ public class Announcement {
         this.title = title;
         this.content = content;
         this.createdBy = createdBy;
+        this.active = true;
+    }
+
+    public Announcement(String title, String content, User createdBy, String targetDepartment) {
+        this.title = title;
+        this.content = content;
+        this.createdBy = createdBy;
+        this.targetDepartment = targetDepartment;
         this.active = true;
     }
 
@@ -112,6 +124,14 @@ public class Announcement {
         this.updatedAt = updatedAt;
     }
 
+    public String getTargetDepartment() {
+        return targetDepartment;
+    }
+
+    public void setTargetDepartment(String targetDepartment) {
+        this.targetDepartment = targetDepartment;
+    }
+
     // Helper methods
     public boolean isActive() {
         return Boolean.TRUE.equals(this.active);
@@ -134,6 +154,28 @@ public class Announcement {
             return "";
         }
         return content.length() > 100 ? content.substring(0, 100) + "..." : content;
+    }
+
+    public boolean isVisibleToUser(User user) {
+        // If targetDepartment is null or empty, it's company-wide
+        if (targetDepartment == null || targetDepartment.trim().isEmpty()) {
+            return true;
+        }
+        
+        // If user has no department, they can only see company-wide announcements
+        if (user.getDepartment() == null) {
+            return false;
+        }
+        
+        // Check if user's department matches the target department
+        return targetDepartment.equals(user.getDepartment());
+    }
+
+    public String getTargetDescription() {
+        if (targetDepartment == null || targetDepartment.trim().isEmpty()) {
+            return "Company-wide";
+        }
+        return targetDepartment;
     }
 
     @Override

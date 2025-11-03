@@ -123,8 +123,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getRequestURI();
         
-        // Skip JWT filter for public endpoints
-        return path.startsWith("/api/auth/") ||
+        // Skip JWT filter for public endpoints only
+        return path.equals("/api/auth/login") ||
+               path.equals("/api/auth/refresh") ||
                path.startsWith("/h2-console/") ||
                path.startsWith("/actuator/health") ||
                path.startsWith("/css/") ||

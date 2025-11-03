@@ -68,7 +68,7 @@ public class AnnouncementService {
             throw new UnauthorizedAccessException("Only HR can create announcements");
         }
 
-        Announcement announcement = new Announcement(request.getTitle(), request.getContent(), creator);
+        Announcement announcement = new Announcement(request.getTitle(), request.getContent(), creator, request.getTargetDepartment());
         announcement = announcementRepository.save(announcement);
 
         logger.info("Successfully created announcement with ID: {}", announcement.getId());
@@ -86,24 +86,31 @@ public class AnnouncementService {
     public Page<AnnouncementResponse> getActiveAnnouncements(Pageable pageable, Long userId) {
         logger.debug("Retrieving active announcements for user ID: {}", userId);
 
+        // Get the user to check their department
+        User user = null;
+        if (userId != null) {
+            user = userRepository.findById(userId).orElse(null);
+        }
+
         Page<Announcement> announcements = announcementRepository.findByActiveTrueOrderByCreatedAtDesc(pageable);
         
         // Get read status for the user
         Set<Long> readAnnouncementIds = null;
-        if (userId != null) {
-            User user = userRepository.findById(userId).orElse(null);
-            if (user != null) {
-                readAnnouncementIds = readStatusRepository.findReadAnnouncementIdsByUser(user)
-                        .stream().collect(Collectors.toSet());
-            }
+        if (user != null) {
+            readAnnouncementIds = readStatusRepository.findReadAnnouncementIdsByUser(user)
+                    .stream().collect(Collectors.toSet());
         }
 
         final Set<Long> finalReadIds = readAnnouncementIds;
+        final User finalUser = user;
+        
+        // Filter announcements based on user's department and convert to response
         List<AnnouncementResponse> responses = announcements.getContent().stream()
+                .filter(announcement -> finalUser == null || announcement.isVisibleToUser(finalUser))
                 .map(announcement -> convertToResponse(announcement, finalReadIds))
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(responses, pageable, announcements.getTotalElements());
+        return new PageImpl<>(responses, pageable, responses.size());
     }
 
     /**
@@ -215,10 +222,41 @@ public class AnnouncementService {
 
         announcement.setTitle(request.getTitle());
         announcement.setContent(request.getContent());
+        announcement.setTargetDepartment(request.getTargetDepartment());
         announcement = announcementRepository.save(announcement);
 
         logger.info("Successfully updated announcement with ID: {}", id);
         return convertToResponse(announcement, null);
+    }
+
+    /**
+     * Delete an announcement (hard delete) (HR only).
+     * 
+     * @param id the announcement ID
+     * @param deleterId the ID of the user deleting the announcement
+     * @throws AnnouncementNotFoundException if announcement not found
+     * @throws UnauthorizedAccessException if user is not admin
+     */
+    public void deleteAnnouncement(Long id, Long deleterId) {
+        logger.info("Deleting announcement with ID: {} by user ID: {}", id, deleterId);
+
+        User deleter = userRepository.findById(deleterId)
+                .orElseThrow(() -> new UserNotFoundException("User not found with ID: " + deleterId));
+
+        if (deleter.getRole() != Role.HR) {
+            throw new UnauthorizedAccessException("Only HR can delete announcements");
+        }
+
+        Announcement announcement = announcementRepository.findById(id)
+                .orElseThrow(() -> new AnnouncementNotFoundException("Announcement not found with ID: " + id));
+
+        // Delete related announcement read status records first
+        readStatusRepository.deleteByAnnouncementId(id);
+        
+        // Then delete the announcement
+        announcementRepository.delete(announcement);
+
+        logger.info("Successfully deleted announcement with ID: {}", id);
     }
 
     /**
@@ -386,7 +424,8 @@ public class AnnouncementService {
                 announcement.getCreatedBy().getId(),
                 announcement.getActive(),
                 announcement.getCreatedAt(),
-                announcement.getUpdatedAt()
+                announcement.getUpdatedAt(),
+                announcement.getTargetDepartment()
         );
 
         // Set read status if available

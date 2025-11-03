@@ -15,12 +15,21 @@ public class AnnouncementRequest {
     @Size(max = 5000, message = "Content must not exceed 5000 characters")
     private String content;
 
+    @Size(max = 100, message = "Target department must not exceed 100 characters")
+    private String targetDepartment; // null or empty means company-wide
+
     // Constructors
     public AnnouncementRequest() {}
 
     public AnnouncementRequest(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    public AnnouncementRequest(String title, String content, String targetDepartment) {
+        this.title = title;
+        this.content = content;
+        this.targetDepartment = targetDepartment;
     }
 
     // Getters and Setters
@@ -38,6 +47,14 @@ public class AnnouncementRequest {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public String getTargetDepartment() {
+        return targetDepartment;
+    }
+
+    public void setTargetDepartment(String targetDepartment) {
+        this.targetDepartment = targetDepartment;
     }
 
     @Override

@@ -97,14 +97,14 @@ public class SecurityConfig {
                 .requestMatchers("/api/leaves/request").hasAnyRole("EMPLOYEE", "HR", "IT_ADMIN", "FINANCE")
                 .requestMatchers("/api/payroll/my-payslips").hasAnyRole("EMPLOYEE", "HR", "IT_ADMIN", "FINANCE")
                 .requestMatchers("/api/payroll/payslip/**").hasAnyRole("EMPLOYEE", "HR", "IT_ADMIN", "FINANCE")
-                .requestMatchers("/api/announcements").hasAnyRole("EMPLOYEE", "HR", "IT_ADMIN", "FINANCE")
+                .requestMatchers("/api/announcements").authenticated()
                 
                 // HR endpoints - accessible by HR only
                 .requestMatchers("/api/leaves/pending").hasRole("HR")
                 .requestMatchers("/api/leaves/*/approve").hasRole("HR")
                 .requestMatchers("/api/leaves/*/reject").hasRole("HR")
                 .requestMatchers("/api/leaves/all").hasRole("HR")
-                .requestMatchers(HttpMethod.POST, "/api/announcements").hasRole("HR")
+                .requestMatchers(HttpMethod.POST, "/api/announcements").authenticated()
                 .requestMatchers(HttpMethod.PUT, "/api/announcements/*").hasRole("HR")
                 .requestMatchers(HttpMethod.DELETE, "/api/announcements/*").hasRole("HR")
                 .requestMatchers("/api/announcements/*/reactivate").hasRole("HR")

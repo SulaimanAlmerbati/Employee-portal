@@ -76,8 +76,6 @@ public class Leave {
         this.status = LeaveStatus.PENDING;
     }
 
-    public boolean test(){}
-
     // Getters and Setters
     public Long getId() {
         return id;

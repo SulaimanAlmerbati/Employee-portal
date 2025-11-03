@@ -191,17 +191,17 @@ public class AnnouncementController {
     }
 
     /**
-     * Deactivate an announcement (soft delete) (HR only).
+     * Delete an announcement (hard delete) (HR only).
      */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('HR')")
-    public ResponseEntity<Void> deactivateAnnouncement(
+    public ResponseEntity<Void> deleteAnnouncement(
             @PathVariable Long id,
             @AuthenticationPrincipal UserPrincipal userPrincipal) {
         
-        logger.info("Deactivating announcement {} by admin: {}", id, userPrincipal.getUsername());
+        logger.info("Deleting announcement {} by admin: {}", id, userPrincipal.getUsername());
         
-        announcementService.deactivateAnnouncement(id, userPrincipal.getId());
+        announcementService.deleteAnnouncement(id, userPrincipal.getId());
         
         return ResponseEntity.noContent().build();
     }
