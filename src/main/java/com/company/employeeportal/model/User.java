@@ -67,6 +67,10 @@ public class User {
     @Column(nullable = false)
     private Boolean active = true;
 
+    @Size(max = 500, message = "Profile picture path must not exceed 500 characters")
+    @Column(name = "profile_picture", length = 500)
+    private String profilePicture;
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -177,6 +181,14 @@ public class User {
 
     public void setActive(Boolean active) {
         this.active = active;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 
     public LocalDateTime getCreatedAt() {

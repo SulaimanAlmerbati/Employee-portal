@@ -61,14 +61,14 @@ class AnnouncementServiceTest {
         testAdmin = new User();
         testAdmin.setId(1L);
         testAdmin.setName("Admin User");
-        testAdmin.setEmail("admin@company.com");
+        testAdmin.setEmail("admin@array.world");
         testAdmin.setRole(Role.ADMIN);
 
         // Create test employee user
         testEmployee = new User();
         testEmployee.setId(2L);
         testEmployee.setName("Employee User");
-        testEmployee.setEmail("employee@company.com");
+        testEmployee.setEmail("employee@array.world");
         testEmployee.setRole(Role.EMPLOYEE);
 
         // Create test announcement

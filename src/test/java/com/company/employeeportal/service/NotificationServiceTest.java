@@ -54,7 +54,7 @@ class NotificationServiceTest {
         employee = new User();
         employee.setId(1L);
         employee.setName("John Doe");
-        employee.setEmail("john.doe@company.com");
+        employee.setEmail("john.doe@array.world");
         employee.setRole(Role.EMPLOYEE);
         employee.setDepartment("IT");
 
@@ -62,7 +62,7 @@ class NotificationServiceTest {
         manager = new User();
         manager.setId(2L);
         manager.setName("Jane Manager");
-        manager.setEmail("jane.manager@company.com");
+        manager.setEmail("jane.manager@array.world");
         manager.setRole(Role.MANAGER);
         manager.setDepartment("IT");
 
@@ -79,7 +79,7 @@ class NotificationServiceTest {
         leave.setUpdatedAt(LocalDateTime.now());
 
         // Set up test configuration values
-        ReflectionTestUtils.setField(notificationService, "fromEmail", "noreply@company.com");
+        ReflectionTestUtils.setField(notificationService, "fromEmail", "noreply@array.world");
         ReflectionTestUtils.setField(notificationService, "companyName", "Test Company");
         ReflectionTestUtils.setField(notificationService, "portalUrl", "http://localhost:8080");
 

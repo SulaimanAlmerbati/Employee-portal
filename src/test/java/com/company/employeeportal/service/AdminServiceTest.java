@@ -49,17 +49,17 @@ class AdminServiceTest {
     @BeforeEach
     void setUp() {
         // Create test users
-        testEmployee = new User("John Doe", "john@company.com", "password", Role.EMPLOYEE);
+        testEmployee = new User("John Doe", "john@array.world", "password", Role.EMPLOYEE);
         testEmployee.setId(1L);
         testEmployee.setDepartment("Engineering");
         testEmployee.setActive(true);
 
-        testManager = new User("Jane Smith", "jane@company.com", "password", Role.MANAGER);
+        testManager = new User("Jane Smith", "jane@array.world", "password", Role.MANAGER);
         testManager.setId(2L);
         testManager.setDepartment("Engineering");
         testManager.setActive(true);
 
-        testAdmin = new User("Admin User", "admin@company.com", "password", Role.ADMIN);
+        testAdmin = new User("Admin User", "admin@array.world", "password", Role.ADMIN);
         testAdmin.setId(3L);
         testAdmin.setDepartment("IT");
         testAdmin.setActive(true);

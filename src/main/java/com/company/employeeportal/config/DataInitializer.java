@@ -34,9 +34,21 @@ public class DataInitializer implements CommandLineRunner {
     private void initializeUsers() {
         logger.info("Initializing default users...");
 
-        // Check if users already exist
-        if (userRepository.count() > 0) {
-            logger.info("Users already exist, skipping initialization");
+        // Check if we need to migrate from old @company.com emails to @array.world
+        boolean hasOldEmails = userRepository.existsByEmailContaining("@company.com");
+        if (hasOldEmails) {
+            logger.info("Found old @company.com emails, clearing database and recreating users with @array.world");
+            userRepository.deleteAll();
+        } else if (userRepository.count() > 0) {
+            // Check if IT admin exists and ensure they are active
+            User itAdmin = userRepository.findByEmail("itadmin@array.world").orElse(null);
+            if (itAdmin != null && !itAdmin.getActive()) {
+                logger.info("IT Admin user exists but is inactive, reactivating...");
+                itAdmin.setActive(true);
+                userRepository.save(itAdmin);
+                logger.info("IT Admin user reactivated: {}", itAdmin.getEmail());
+            }
+            logger.info("Users already exist with correct emails, skipping initialization");
             return;
         }
 
@@ -44,7 +56,7 @@ public class DataInitializer implements CommandLineRunner {
             // Create Employee User
             User employee = new User();
             employee.setName("Jane Employee");
-            employee.setEmail("employee@company.com");
+            employee.setEmail("employee@array.world");
             employee.setPassword(passwordEncoder.encode("Employee123!"));
             employee.setRole(Role.EMPLOYEE);
             employee.setDepartment("Engineering");
@@ -58,7 +70,7 @@ public class DataInitializer implements CommandLineRunner {
             // Create HR User
             User hrUser = new User();
             hrUser.setName("Sarah HR");
-            hrUser.setEmail("hr@company.com");
+            hrUser.setEmail("hr@array.world");
             hrUser.setPassword(passwordEncoder.encode("HR123!"));
             hrUser.setRole(Role.HR);
             hrUser.setDepartment("Human Resources");
@@ -72,7 +84,7 @@ public class DataInitializer implements CommandLineRunner {
             // Create IT Admin User
             User itAdmin = new User();
             itAdmin.setName("Mike IT Admin");
-            itAdmin.setEmail("itadmin@company.com");
+            itAdmin.setEmail("itadmin@array.world");
             itAdmin.setPassword(passwordEncoder.encode("ITAdmin123!"));
             itAdmin.setRole(Role.IT_ADMIN);
             itAdmin.setDepartment("Information Technology");
@@ -86,7 +98,7 @@ public class DataInitializer implements CommandLineRunner {
             // Create Finance User
             User financeUser = new User();
             financeUser.setName("Lisa Finance");
-            financeUser.setEmail("finance@company.com");
+            financeUser.setEmail("finance@array.world");
             financeUser.setPassword(passwordEncoder.encode("Finance123!"));
             financeUser.setRole(Role.FINANCE);
             financeUser.setDepartment("Finance");
@@ -98,9 +110,9 @@ public class DataInitializer implements CommandLineRunner {
             logger.info("Created Finance user: {}", financeUser.getEmail());
 
             // Create additional test employees
-            createTestEmployee("Alice Johnson", "alice@company.com", "Engineering", "Senior Developer");
-            createTestEmployee("Bob Smith", "bob@company.com", "Marketing", "Marketing Specialist");
-            createTestEmployee("Carol Davis", "carol@company.com", "Finance", "Financial Analyst");
+            createTestEmployee("Alice Johnson", "alice@array.world", "Engineering", "Senior Developer");
+            createTestEmployee("Bob Smith", "bob@array.world", "Marketing", "Marketing Specialist");
+            createTestEmployee("Carol Davis", "carol@array.world", "Finance", "Financial Analyst");
 
             logger.info("Successfully initialized {} users", userRepository.count());
 

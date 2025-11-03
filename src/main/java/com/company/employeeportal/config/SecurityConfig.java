@@ -89,6 +89,7 @@ public class SecurityConfig {
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers("/actuator/health").permitAll()
                 .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
+                .requestMatchers("/api/files/profile-pictures/**").permitAll() // Allow public access to profile pictures
                 .requestMatchers("/login", "/", "/dashboard").permitAll()
                 
                 // Employee endpoints - accessible by all authenticated users

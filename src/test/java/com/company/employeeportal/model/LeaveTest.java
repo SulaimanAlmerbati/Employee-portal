@@ -26,7 +26,7 @@ class LeaveTest {
         user = new User();
         user.setId(1L);
         user.setName("John Doe");
-        user.setEmail("john@company.com");
+        user.setEmail("john@array.world");
         user.setRole(Role.EMPLOYEE);
         
         leave = new Leave();

@@ -42,17 +42,17 @@ class EntityRelationshipIntegrationTest {
     @BeforeEach
     void setUp() {
         // Create test users with different roles
-        employee = new User("John Employee", "john@company.com", "password123", Role.EMPLOYEE);
+        employee = new User("John Employee", "john@array.world", "password123", Role.EMPLOYEE);
         employee.setDepartment("IT");
         employee.setPosition("Developer");
         employee.setJoinDate(LocalDate.now().minusYears(1));
 
-        manager = new User("Jane Manager", "jane@company.com", "password456", Role.MANAGER);
+        manager = new User("Jane Manager", "jane@array.world", "password456", Role.MANAGER);
         manager.setDepartment("IT");
         manager.setPosition("Team Lead");
         manager.setJoinDate(LocalDate.now().minusYears(2));
 
-        admin = new User("Admin User", "admin@company.com", "password789", Role.ADMIN);
+        admin = new User("Admin User", "admin@array.world", "password789", Role.ADMIN);
         admin.setDepartment("HR");
         admin.setPosition("System Administrator");
         admin.setJoinDate(LocalDate.now().minusYears(3));
@@ -221,7 +221,7 @@ class EntityRelationshipIntegrationTest {
     @Test
     void testAuditFieldsPopulation() {
         // Create and persist entities to test audit fields
-        User testUser = new User("Test User", "test@company.com", "password123", Role.EMPLOYEE);
+        User testUser = new User("Test User", "test@array.world", "password123", Role.EMPLOYEE);
         testUser = entityManager.persistAndFlush(testUser);
 
         // Audit fields should be populated after persistence

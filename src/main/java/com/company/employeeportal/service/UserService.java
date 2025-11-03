@@ -17,9 +17,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
+import org.springframework.web.multipart.MultipartFile;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -34,11 +39,15 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final Validator validator;
+    private final FileUploadService fileUploadService;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, Validator validator, FileUploadService fileUploadService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.validator = validator;
+        this.fileUploadService = fileUploadService;
     }
 
     /**
@@ -142,6 +151,41 @@ public class UserService {
         logger.info("User profile updated successfully - User ID: {}", userId);
         
         return convertToUserProfileResponse(savedUser);
+    }
+
+    /**
+     * Upload profile picture for a user.
+     * 
+     * @param userId the user ID
+     * @param file the profile picture file
+     * @param currentUser the current authenticated user
+     * @return the file path of the uploaded picture
+     * @throws IOException if file upload fails
+     * @throws UnauthorizedAccessException if user tries to upload for another user (non-admin)
+     */
+    public String uploadProfilePicture(Long userId, MultipartFile file, User currentUser) throws IOException {
+        User targetUser = getUserProfile(userId);
+        
+        // Check if user is uploading for themselves or if admin is uploading
+        if (!targetUser.getId().equals(currentUser.getId()) && !currentUser.isItAdmin()) {
+            throw new UnauthorizedAccessException("You can only upload profile pictures for yourself");
+        }
+
+        // Delete old profile picture if exists
+        if (StringUtils.hasText(targetUser.getProfilePicture())) {
+            fileUploadService.deleteProfilePicture(targetUser.getProfilePicture());
+        }
+
+        // Upload new profile picture
+        String filePath = fileUploadService.uploadProfilePicture(file, userId);
+        
+        // Update user's profile picture path
+        targetUser.setProfilePicture(filePath);
+        userRepository.save(targetUser);
+        
+        logger.info("Profile picture uploaded for user: {} by user: {}", userId, currentUser.getId());
+        
+        return filePath;
     }
 
     /**
@@ -409,6 +453,11 @@ public class UserService {
 
         User existingUser = getUserProfile(userId);
         
+        // Prevent users from deactivating themselves through admin update
+        if (userId.equals(currentUser.getId()) && updatedUser.getActive() != null && !updatedUser.getActive()) {
+            throw new IllegalArgumentException("Users cannot deactivate themselves");
+        }
+        
         // Validate input
         validateUserInput(updatedUser);
 
@@ -524,6 +573,11 @@ public class UserService {
     public void deactivateUser(Long userId, User currentUser) {
         if (!currentUser.isItAdmin()) {
             throw new UnauthorizedAccessException("Only administrators can deactivate users");
+        }
+
+        // Prevent users from deactivating themselves
+        if (userId.equals(currentUser.getId())) {
+            throw new IllegalArgumentException("Users cannot deactivate themselves");
         }
 
         User user = getUserProfile(userId);
@@ -843,6 +897,18 @@ public class UserService {
             throw new IllegalArgumentException("User profile update request data cannot be null");
         }
 
+        // Use Bean Validation to validate the request (including @UniqueEmailForUpdate)
+        Set<ConstraintViolation<UserProfileUpdateRequest>> violations = validator.validate(updateRequest);
+        
+        if (!violations.isEmpty()) {
+            StringBuilder errorMessage = new StringBuilder("Validation errors: ");
+            for (ConstraintViolation<UserProfileUpdateRequest> violation : violations) {
+                errorMessage.append(violation.getMessage()).append("; ");
+            }
+            throw new IllegalArgumentException(errorMessage.toString());
+        }
+
+        // Additional manual validations
         if (StringUtils.hasText(updateRequest.getName()) && updateRequest.getName().trim().length() > 100) {
             throw new IllegalArgumentException("Name must not exceed 100 characters");
         }
@@ -901,6 +967,7 @@ public class UserService {
         response.setDepartment(user.getDepartment());
         response.setPosition(user.getPosition());
         response.setContactInfo(user.getContactInfo());
+        response.setProfilePicture(user.getProfilePicture());
         response.setJoinDate(user.getJoinDate());
         response.setActive(user.getActive());
         response.setCreatedAt(user.getCreatedAt());

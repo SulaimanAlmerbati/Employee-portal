@@ -24,7 +24,7 @@ class UserTest {
         
         user = new User();
         user.setName("John Doe");
-        user.setEmail("john.doe@company.com");
+        user.setEmail("john.doe@array.world");
         user.setPassword("password123");
         user.setRole(Role.EMPLOYEE);
         user.setDepartment("IT");
@@ -88,9 +88,9 @@ class UserTest {
 
     @Test
     void testConstructorWithParameters() {
-        User newUser = new User("Jane Smith", "jane@company.com", "password456", Role.MANAGER);
+        User newUser = new User("Jane Smith", "jane@array.world", "password456", Role.MANAGER);
         assertEquals("Jane Smith", newUser.getName());
-        assertEquals("jane@company.com", newUser.getEmail());
+        assertEquals("jane@array.world", newUser.getEmail());
         assertEquals("password456", newUser.getPassword());
         assertEquals(Role.MANAGER, newUser.getRole());
     }
@@ -123,7 +123,7 @@ class UserTest {
         assertTrue(toString.contains("User{"));
         assertTrue(toString.contains("id=1"));
         assertTrue(toString.contains("name='John Doe'"));
-        assertTrue(toString.contains("email='john.doe@company.com'"));
+        assertTrue(toString.contains("email='john.doe@array.world'"));
         assertTrue(toString.contains("role=EMPLOYEE"));
         assertTrue(toString.contains("active=true"));
     }

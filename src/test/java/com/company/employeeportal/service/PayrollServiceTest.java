@@ -58,7 +58,7 @@ class PayrollServiceTest {
         testEmployee = new User();
         testEmployee.setId(1L);
         testEmployee.setName("John Doe");
-        testEmployee.setEmail("john.doe@company.com");
+        testEmployee.setEmail("john.doe@array.world");
         testEmployee.setRole(Role.EMPLOYEE);
         testEmployee.setDepartment("IT");
         testEmployee.setPosition("Developer");
@@ -68,7 +68,7 @@ class PayrollServiceTest {
         otherEmployee = new User();
         otherEmployee.setId(2L);
         otherEmployee.setName("Jane Smith");
-        otherEmployee.setEmail("jane.smith@company.com");
+        otherEmployee.setEmail("jane.smith@array.world");
         otherEmployee.setRole(Role.EMPLOYEE);
         otherEmployee.setDepartment("HR");
         otherEmployee.setPosition("HR Specialist");
@@ -109,7 +109,7 @@ class PayrollServiceTest {
     @Test
     void getMyPayslips_ShouldReturnUserPayslips_WhenValidUser() {
         // Arrange
-        String userEmail = "john.doe@company.com";
+        String userEmail = "john.doe@array.world";
         List<Payroll> expectedPayslips = Arrays.asList(testPayroll1, testPayroll2);
         Page<Payroll> payrollPage = new PageImpl<>(expectedPayslips);
 
@@ -132,7 +132,7 @@ class PayrollServiceTest {
     @Test
     void getMyPayslips_ShouldThrowUserNotFoundException_WhenUserNotFound() {
         // Arrange
-        String userEmail = "nonexistent@company.com";
+        String userEmail = "nonexistent@array.world";
         when(userRepository.findByEmail(userEmail)).thenReturn(Optional.empty());
 
         // Act & Assert
@@ -144,7 +144,7 @@ class PayrollServiceTest {
     @Test
     void getMyPayslipsPaginated_ShouldReturnPaginatedResults() {
         // Arrange
-        String userEmail = "john.doe@company.com";
+        String userEmail = "john.doe@array.world";
         int page = 0;
         int size = 10;
         List<Payroll> payslips = Arrays.asList(testPayroll1, testPayroll2);
@@ -168,7 +168,7 @@ class PayrollServiceTest {
     @Test
     void getPayslipById_ShouldReturnPayslip_WhenUserOwnsPayslip() {
         // Arrange
-        String userEmail = "john.doe@company.com";
+        String userEmail = "john.doe@array.world";
         Long payslipId = 1L;
 
         when(userRepository.findByEmail(userEmail)).thenReturn(Optional.of(testEmployee));
@@ -188,7 +188,7 @@ class PayrollServiceTest {
     @Test
     void getPayslipById_ShouldThrowPayrollAccessException_WhenUserDoesNotOwnPayslip() {
         // Arrange
-        String userEmail = "john.doe@company.com";
+        String userEmail = "john.doe@array.world";
         Long payslipId = 3L; // This belongs to otherEmployee
 
         when(userRepository.findByEmail(userEmail)).thenReturn(Optional.of(testEmployee));
@@ -206,7 +206,7 @@ class PayrollServiceTest {
     @Test
     void getPayslipById_ShouldThrowPayrollAccessException_WhenPayslipNotFound() {
         // Arrange
-        String userEmail = "john.doe@company.com";
+        String userEmail = "john.doe@array.world";
         Long payslipId = 999L;
 
         when(userRepository.findByEmail(userEmail)).thenReturn(Optional.of(testEmployee));
@@ -224,7 +224,7 @@ class PayrollServiceTest {
     @Test
     void getPayslipsByYear_ShouldReturnPayslipsForSpecificYear() {
         // Arrange
-        String userEmail = "john.doe@company.com";
+        String userEmail = "john.doe@array.world";
         Integer year = 2024;
         List<Payroll> expectedPayslips = Arrays.asList(testPayroll1, testPayroll2);
 
@@ -245,7 +245,7 @@ class PayrollServiceTest {
     @Test
     void getPayslipsByYearRange_ShouldReturnPayslipsInRange() {
         // Arrange
-        String userEmail = "john.doe@company.com";
+        String userEmail = "john.doe@array.world";
         Integer startYear = 2023;
         Integer endYear = 2024;
         List<Payroll> expectedPayslips = Arrays.asList(testPayroll1, testPayroll2);
@@ -267,7 +267,7 @@ class PayrollServiceTest {
     @Test
     void getPayslipsByYearRange_ShouldThrowException_WhenStartYearGreaterThanEndYear() {
         // Arrange
-        String userEmail = "john.doe@company.com";
+        String userEmail = "john.doe@array.world";
         Integer startYear = 2025;
         Integer endYear = 2024;
 
@@ -285,7 +285,7 @@ class PayrollServiceTest {
     @Test
     void getRecentPayslips_ShouldReturnPayslipsWithin24Months() {
         // Arrange
-        String userEmail = "john.doe@company.com";
+        String userEmail = "john.doe@array.world";
         List<Payroll> expectedPayslips = Arrays.asList(testPayroll1, testPayroll2);
 
         when(userRepository.findByEmail(userEmail)).thenReturn(Optional.of(testEmployee));
@@ -305,7 +305,7 @@ class PayrollServiceTest {
     @Test
     void getLatestPayslip_ShouldReturnLatestPayslip_WhenExists() {
         // Arrange
-        String userEmail = "john.doe@company.com";
+        String userEmail = "john.doe@array.world";
 
         when(userRepository.findByEmail(userEmail)).thenReturn(Optional.of(testEmployee));
         when(payrollRepository.findLatestByUser(testEmployee)).thenReturn(Optional.of(testPayroll1));
@@ -323,7 +323,7 @@ class PayrollServiceTest {
     @Test
     void getLatestPayslip_ShouldReturnEmpty_WhenNoPayslipsExist() {
         // Arrange
-        String userEmail = "john.doe@company.com";
+        String userEmail = "john.doe@array.world";
 
         when(userRepository.findByEmail(userEmail)).thenReturn(Optional.of(testEmployee));
         when(payrollRepository.findLatestByUser(testEmployee)).thenReturn(Optional.empty());
@@ -340,7 +340,7 @@ class PayrollServiceTest {
     @Test
     void getPayslipCount_ShouldReturnCorrectCount() {
         // Arrange
-        String userEmail = "john.doe@company.com";
+        String userEmail = "john.doe@array.world";
         long expectedCount = 5L;
 
         when(userRepository.findByEmail(userEmail)).thenReturn(Optional.of(testEmployee));
@@ -421,7 +421,7 @@ class PayrollServiceTest {
     @Test
     void getMyPayslips_ShouldOnlyReturnOwnPayslips_AccessRestrictionTest() {
         // Arrange - Test requirement 4.4: prevent access to other employees' data
-        String userEmail = "john.doe@company.com";
+        String userEmail = "john.doe@array.world";
         List<Payroll> userPayslips = Arrays.asList(testPayroll1, testPayroll2);
         Page<Payroll> payrollPage = new PageImpl<>(userPayslips);
 
@@ -446,7 +446,7 @@ class PayrollServiceTest {
     @Test
     void getPayslipById_ShouldEnforceStrictAccessControl() {
         // Arrange - Test requirement 4.4: strict access control
-        String userEmail = "john.doe@company.com";
+        String userEmail = "john.doe@array.world";
         Long otherUserPayslipId = otherUserPayroll.getId();
 
         when(userRepository.findByEmail(userEmail)).thenReturn(Optional.of(testEmployee));
@@ -466,7 +466,7 @@ class PayrollServiceTest {
     @Test
     void getRecentPayslips_ShouldMaintain24MonthHistory() {
         // Arrange - Test requirement 4.5: maintain 24-month history
-        String userEmail = "john.doe@company.com";
+        String userEmail = "john.doe@array.world";
         
         // Create payslips within and outside 24-month window
         Payroll recentPayroll = new Payroll();
@@ -499,7 +499,7 @@ class PayrollServiceTest {
     @Test
     void getPayslipsByYearRange_ShouldFilterCorrectly() {
         // Arrange - Test date filtering functionality
-        String userEmail = "john.doe@company.com";
+        String userEmail = "john.doe@array.world";
         Integer startYear = 2022;
         Integer endYear = 2024;
         
@@ -526,7 +526,7 @@ class PayrollServiceTest {
     @Test
     void getPayslipsByYear_ShouldReturnOnlyUserPayslipsForSpecificYear() {
         // Arrange - Test year-specific filtering with access control
-        String userEmail = "john.doe@company.com";
+        String userEmail = "john.doe@array.world";
         Integer year = 2024;
         
         List<Payroll> yearPayslips = Arrays.asList(testPayroll1, testPayroll2);
@@ -553,7 +553,7 @@ class PayrollServiceTest {
     @Test
     void getPayslipCount_ShouldReturnAccurateCount() {
         // Arrange - Test payslip count for history tracking
-        String userEmail = "john.doe@company.com";
+        String userEmail = "john.doe@array.world";
         long expectedCount = 24L; // 2 years of monthly payslips
 
         when(userRepository.findByEmail(userEmail)).thenReturn(Optional.of(testEmployee));

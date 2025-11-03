@@ -55,7 +55,7 @@ class UserControllerTest {
         testEmployee = new User();
         testEmployee.setId(1L);
         testEmployee.setName("John Doe");
-        testEmployee.setEmail("john.doe@company.com");
+        testEmployee.setEmail("john.doe@array.world");
         testEmployee.setRole(Role.EMPLOYEE);
         testEmployee.setDepartment("IT");
         testEmployee.setPosition("Developer");
@@ -68,7 +68,7 @@ class UserControllerTest {
         testAdmin = new User();
         testAdmin.setId(2L);
         testAdmin.setName("Admin User");
-        testAdmin.setEmail("admin@company.com");
+        testAdmin.setEmail("admin@array.world");
         testAdmin.setRole(Role.ADMIN);
         testAdmin.setActive(true);
         testAdmin.setCreatedAt(LocalDateTime.now());
@@ -90,7 +90,7 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.name").value("John Doe"))
-                .andExpect(jsonPath("$.email").value("john.doe@company.com"))
+                .andExpect(jsonPath("$.email").value("john.doe@array.world"))
                 .andExpect(jsonPath("$.role").value("EMPLOYEE"))
                 .andExpect(jsonPath("$.department").value("IT"))
                 .andExpect(jsonPath("$.position").value("Developer"));
@@ -109,7 +109,7 @@ class UserControllerTest {
         User updatedUser = new User();
         updatedUser.setId(1L);
         updatedUser.setName("John Updated");
-        updatedUser.setEmail("john.doe@company.com");
+        updatedUser.setEmail("john.doe@array.world");
         updatedUser.setRole(Role.EMPLOYEE);
         updatedUser.setContactInfo("987-654-3210");
         updatedUser.setActive(true);
@@ -250,7 +250,7 @@ class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.name").value("John Doe"))
-                .andExpect(jsonPath("$.email").value("john.doe@company.com"));
+                .andExpect(jsonPath("$.email").value("john.doe@array.world"));
 
         verify(userService).getUserProfile(1L);
     }
@@ -261,7 +261,7 @@ class UserControllerTest {
         // Given
         UserRequest userRequest = new UserRequest();
         userRequest.setName("New User");
-        userRequest.setEmail("new.user@company.com");
+        userRequest.setEmail("new.user@array.world");
         userRequest.setPassword("Password123!");
         userRequest.setRole(Role.EMPLOYEE);
         userRequest.setDepartment("HR");
@@ -270,7 +270,7 @@ class UserControllerTest {
         User createdUser = new User();
         createdUser.setId(3L);
         createdUser.setName("New User");
-        createdUser.setEmail("new.user@company.com");
+        createdUser.setEmail("new.user@array.world");
         createdUser.setRole(Role.EMPLOYEE);
         createdUser.setDepartment("HR");
         createdUser.setPosition("Specialist");
@@ -287,7 +287,7 @@ class UserControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(3L))
                 .andExpect(jsonPath("$.name").value("New User"))
-                .andExpect(jsonPath("$.email").value("new.user@company.com"))
+                .andExpect(jsonPath("$.email").value("new.user@array.world"))
                 .andExpect(jsonPath("$.role").value("EMPLOYEE"));
 
         verify(userService).getUserProfile(2L);
@@ -300,7 +300,7 @@ class UserControllerTest {
         // Given
         UserRequest userRequest = new UserRequest();
         userRequest.setName("New User");
-        userRequest.setEmail("new.user@company.com");
+        userRequest.setEmail("new.user@array.world");
         userRequest.setPassword("Password123!");
 
         // When & Then
@@ -325,7 +325,7 @@ class UserControllerTest {
         User updatedUser = new User();
         updatedUser.setId(1L);
         updatedUser.setName("Updated User");
-        updatedUser.setEmail("john.doe@company.com");
+        updatedUser.setEmail("john.doe@array.world");
         updatedUser.setDepartment("Finance");
         updatedUser.setPosition("Manager");
         updatedUser.setRole(Role.EMPLOYEE);

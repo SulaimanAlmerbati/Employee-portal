@@ -72,7 +72,7 @@ class LeaveControllerTest {
         leaveResponse.setDurationInDays(3L);
 
         // Create test user principal
-        userPrincipal = new UserPrincipal(1L, "john.doe@company.com", "password", Arrays.asList());
+        userPrincipal = new UserPrincipal(1L, "john.doe@array.world", "password", Arrays.asList());
     }
 
     @Test
@@ -470,7 +470,7 @@ class LeaveControllerTest {
     @WithMockUser(roles = "ADMIN")
     void approveLeaveRequest_Admin_Success() throws Exception {
         // Arrange - Test that admins can approve leave requests
-        UserPrincipal adminPrincipal = new UserPrincipal(3L, "admin@company.com", "password", Arrays.asList());
+        UserPrincipal adminPrincipal = new UserPrincipal(3L, "admin@array.world", "password", Arrays.asList());
         LeaveApprovalRequest approvalRequest = new LeaveApprovalRequest("Admin approval");
         leaveResponse.setStatus(LeaveStatus.APPROVED);
         
@@ -490,7 +490,7 @@ class LeaveControllerTest {
     @WithMockUser(roles = "ADMIN")
     void rejectLeaveRequest_Admin_Success() throws Exception {
         // Arrange - Test that admins can reject leave requests
-        UserPrincipal adminPrincipal = new UserPrincipal(3L, "admin@company.com", "password", Arrays.asList());
+        UserPrincipal adminPrincipal = new UserPrincipal(3L, "admin@array.world", "password", Arrays.asList());
         LeaveApprovalRequest approvalRequest = new LeaveApprovalRequest("Admin rejection");
         leaveResponse.setStatus(LeaveStatus.REJECTED);
         

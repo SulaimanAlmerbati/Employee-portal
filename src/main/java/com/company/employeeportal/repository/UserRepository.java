@@ -35,6 +35,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
 
     /**
+     * Check if any email contains the specified string.
+     */
+    boolean existsByEmailContaining(String emailPart);
+
+    /**
      * Find all active users.
      */
     List<User> findByActiveTrue();

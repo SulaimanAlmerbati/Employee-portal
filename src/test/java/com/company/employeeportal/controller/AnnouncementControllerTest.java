@@ -51,8 +51,8 @@ class AnnouncementControllerTest {
     @BeforeEach
     void setUp() {
         // Create test user principals
-        employeePrincipal = new UserPrincipal(2L, "employee@company.com", "password", Role.EMPLOYEE);
-        adminPrincipal = new UserPrincipal(1L, "admin@company.com", "password", Role.ADMIN);
+        employeePrincipal = new UserPrincipal(2L, "employee@array.world", "password", Role.EMPLOYEE);
+        adminPrincipal = new UserPrincipal(1L, "admin@array.world", "password", Role.ADMIN);
 
         // Create test announcement response
         testAnnouncementResponse = new AnnouncementResponse(
@@ -403,7 +403,7 @@ class AnnouncementControllerTest {
     @WithMockUser(roles = "MANAGER")
     void createAnnouncement_WithManagerRole_ShouldReturnForbidden() throws Exception {
         // Arrange
-        UserPrincipal managerPrincipal = new UserPrincipal(3L, "manager@company.com", "password", Role.MANAGER);
+        UserPrincipal managerPrincipal = new UserPrincipal(3L, "manager@array.world", "password", Role.MANAGER);
 
         // Act & Assert
         mockMvc.perform(post("/api/announcements")
@@ -419,7 +419,7 @@ class AnnouncementControllerTest {
     @WithMockUser(roles = "MANAGER")
     void updateAnnouncement_WithManagerRole_ShouldReturnForbidden() throws Exception {
         // Arrange
-        UserPrincipal managerPrincipal = new UserPrincipal(3L, "manager@company.com", "password", Role.MANAGER);
+        UserPrincipal managerPrincipal = new UserPrincipal(3L, "manager@array.world", "password", Role.MANAGER);
 
         // Act & Assert
         mockMvc.perform(put("/api/announcements/1")
@@ -435,7 +435,7 @@ class AnnouncementControllerTest {
     @WithMockUser(roles = "MANAGER")
     void deactivateAnnouncement_WithManagerRole_ShouldReturnForbidden() throws Exception {
         // Arrange
-        UserPrincipal managerPrincipal = new UserPrincipal(3L, "manager@company.com", "password", Role.MANAGER);
+        UserPrincipal managerPrincipal = new UserPrincipal(3L, "manager@array.world", "password", Role.MANAGER);
 
         // Act & Assert
         mockMvc.perform(delete("/api/announcements/1")

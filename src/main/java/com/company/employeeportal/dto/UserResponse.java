@@ -19,6 +19,7 @@ public class UserResponse {
     private String department;
     private String position;
     private String contactInfo;
+    private String profilePicture;
     
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate joinDate;
@@ -89,6 +90,14 @@ public class UserResponse {
 
     public void setContactInfo(String contactInfo) {
         this.contactInfo = contactInfo;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 
     public LocalDate getJoinDate() {

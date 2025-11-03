@@ -249,11 +249,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleGlobalException(
             Exception ex, WebRequest request) {
         
+        // Log the error for debugging but don't expose internal details to client
+        System.err.println("Unexpected error: " + ex.getMessage());
+        
         ErrorResponse errorResponse = new ErrorResponse(
             LocalDateTime.now(),
             HttpStatus.INTERNAL_SERVER_ERROR.value(),
             "Internal Server Error",
-            "An unexpected error occurred",
+            "An unexpected error occurred. Please try again later.",
             request.getDescription(false)
         );
 
